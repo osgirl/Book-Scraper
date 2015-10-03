@@ -3,8 +3,8 @@
 # Require the two classes to use the mechanize functionality.
 require 'rubygems'
 require 'mechanize'
-# require access to the Record object
-require_relative 'Book.rb'
+# require access to the book object
+require_relative 'book'
 
 # Connection class : Create a connection to the B&N website using the mechanize gem.
 # @date created:	09/26/15
@@ -23,8 +23,10 @@ class Connection
         @page = Mechanize.new.get(@@webpage) # grab pointer to the root webpage
 		
 		if @page.nil? 
-			raise "Unable to get retrieve reports for provided date."
+            raise "Unable to connect to webpage. Check your internet connection and try again."
 		end
+        
+        puts @page.search("bookRowContainer") #Print the book containers
 		
 	end
 	
