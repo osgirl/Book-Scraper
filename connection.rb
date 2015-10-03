@@ -26,7 +26,7 @@ class Connection
             raise "Unable to connect to webpage. Check your internet connection and try again."
 		end
         
-        puts @page.search("bookRowContainer") #Print the book containers
+        puts @page.search(".bookRowContainer") #Print the book containers
 		
 	end
 	
