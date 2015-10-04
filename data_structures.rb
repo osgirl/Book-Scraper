@@ -43,3 +43,19 @@ class Book
 	# Other possible methods relevant to the record class
 
 end
+
+class Term
+    
+end
+
+class Dept
+    
+end
+
+class Course
+    
+end
+
+class Section
+    
+end
