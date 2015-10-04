@@ -6,7 +6,7 @@ require 'mechanize'
 
 class BackendConnection < Connection
     
-    BACKEND_WEBPAGE = "BNCBTBListView"
+    BACKEND_WEBPAGE = "TextBookProcessDropdownsCmd"
     
     # Set up defaults to use when opening a connection
     def initialize
@@ -16,7 +16,7 @@ class BackendConnection < Connection
     # Open a connection to the B&N site
     def open_connection
         
-        @session = Mechanize.new.get("#{BASE_WEBPAGE}#{VISUAL_WEBPAGE}?#{COMMON_PARAMETERS}") # grab pointer to the root webpage
+        @session = Mechanize.new.get("#{BASE_WEBPAGE}#{BACKEND_WEBPAGE}?#{COMMON_PARAMETERS}") # grab pointer to the root webpage
         @page = @session
         check_connection
         
