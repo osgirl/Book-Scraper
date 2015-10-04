@@ -1,8 +1,5 @@
 #!/usr/bin/ruby
 
-# need to require date to create DateTime objects
-require 'date'
-
 # Record class : Store data and methods relevant to a single Book record
 # date created:	09/25/15
 class Book
@@ -46,16 +43,65 @@ end
 
 class Term
     
+    # An array to store all departments associated with this term
+    attr_accessor :depts
+    # Friendly name of the term
+    attr_accessor :termName
+    # ID corresponding to this term
+    attr_accessor :termId
+    
+    def initialize 
+        @depts = nil
+        @termName = nil
+        @termId = nil
+    end
+    
 end
 
 class Dept
+    
+    # An array to store all courses associated with this department
+    attr_accessor :courses
+    # Friendly name of the dept
+    attr_accessor :deptName
+    # ID corresponding to this dept
+    attr_accessor :deptId
+    
+    def initialize 
+        @courses = nil
+        @deptName = nil
+        @deptId = nil
+    end
     
 end
 
 class Course
     
+    # An array to store all sections associated with this course
+    attr_accessor :sections
+    # Friendly name of the course
+    attr_accessor :courseName
+    # ID corresponding to this course
+    attr_accessor :courseId
+    
+    def initialize 
+        @sections = nil
+        @courseName = nil
+        @courseId = nil
+    end
+    
 end
 
 class Section
+    
+    # Friendly name of the section
+    attr_accessor :sectionName
+    # ID corresponding to this section
+    attr_accessor :sectionId
+    
+    def initialize 
+        @sectionName = nil
+        @sectionId = nil
+    end
     
 end
