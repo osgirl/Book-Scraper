@@ -2,6 +2,7 @@
 
 require_relative 'book'
 require_relative 'connection'
+require_relative 'visualConnection'
 
 # Main class used as controller for the book scraper.
 # @Date Created: 10/02/15
@@ -16,9 +17,10 @@ class Main
             @books = Hash.new()
             input = displayMenu
             if input == 1 
-                @connection = Connection.new
+                @connection = VisualConnection.new
                 @connection.open_connection
-                @connection.close_connection
+                @connection.selectCourse
+                #@connection.close_connection
             elsif input == 2 # Output instructions
                 puts "Option 1 will scrape a single book from a random term, department, course and section"
             elsif input == 3 #force update
