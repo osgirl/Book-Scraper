@@ -66,27 +66,60 @@ class BackendConnection < Connection
         terms = Array.new
         rows[0].search('.termOptions li').each do |termRaw|
             term = Term.new
-            term.termName = termRaw.text
-            term.termId = termRaw.attributes['data-optionvalue'].to_s
+            term.category = Category.new
+            term.category.name = termRaw.text
+            term.category.id = termRaw.attributes['data-optionvalue'].to_s
             terms << term # push element onto end of array
         end
         
         return terms
     end
     
-    # Return all possible departments
+    # Return all possible categories matching the regex in a 2D array
+    def parseCategory
+        return @page.scan(/"categoryName":"(\w*)","categoryId":"(\w*)"/)
+    end
+    
     def parseDepts
         
+        depts = Array.new
+        parseCategory.each do |category|
+            dept = Dept.new
+            dept.category = Category.new
+            dept.category.name = category[0]
+            dept.category.id = category[1]
+            depts << dept
+        end
+        
+        return depts
     end
     
-    # Return all possible courses
     def parseCourses
         
+        courses = Array.new
+        parseCategory.each do |category|
+            course = Course.new
+            course.category = Category.new
+            course.category.name = category[0]
+            course.category.id = category[1]
+            courses << course
+        end
+        
+        return courses
     end
     
-    # Return all possible sections
     def parseSections
         
+        sections = Array.new
+        parseCategory.each do |category|
+            section = Course.new
+            section.category = Category.new
+            section.category.name = category[0]
+            section.category.id = category[1]
+            sections << section
+        end
+        
+        return sections
     end
     
 end

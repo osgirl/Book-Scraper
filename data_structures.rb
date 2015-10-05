@@ -41,23 +41,33 @@ class Book
 
 end
 
+# Common structure for all Terms, Depts, Courses and Sections
+class Category
+    # Friendly name of this category
+    attr_accessor :name
+    # ID corresponding to this category
+    attr_accessor :id
+    
+    def initialize 
+        @name = nil
+        @id = nil
+    end
+    
+end
+
 class Term
     
     # An array to store all departments associated with this term
     attr_accessor :depts
-    # Friendly name of the term
-    attr_accessor :termName
-    # ID corresponding to this term
-    attr_accessor :termId
+    attr_accessor :category
     
     def initialize 
         @depts = nil
-        @termName = nil
-        @termId = nil
+        @category = Category.new
     end
     
     def to_s
-        rep = "ID: #{@termId} #{@termName}\n"
+        rep = "ID: #{@category.id} #{@category.name}\n"
         if !@depts.nil?
             depts.each do |dept|
                 rep = "#{rep}\t#{dept.to_s}\n" 
@@ -71,15 +81,11 @@ class Dept
     
     # An array to store all courses associated with this department
     attr_accessor :courses
-    # Friendly name of the dept
-    attr_accessor :deptName
-    # ID corresponding to this dept
-    attr_accessor :deptId
+    attr_accessor :category
     
     def initialize 
         @courses = nil
-        @deptName = nil
-        @deptId = nil
+        @category = Category.new
     end
     
 end
@@ -88,29 +94,21 @@ class Course
     
     # An array to store all sections associated with this course
     attr_accessor :sections
-    # Friendly name of the course
-    attr_accessor :courseName
-    # ID corresponding to this course
-    attr_accessor :courseId
+    attr_accessor :category
     
     def initialize 
         @sections = nil
-        @courseName = nil
-        @courseId = nil
+        @category = Category.new
     end
     
 end
 
 class Section
     
-    # Friendly name of the section
-    attr_accessor :sectionName
-    # ID corresponding to this section
-    attr_accessor :sectionId
+    attr_accessor :category
     
-    def initialize 
-        @sectionName = nil
-        @sectionId = nil
+    def initialize
+        @category = Category.new
     end
     
 end

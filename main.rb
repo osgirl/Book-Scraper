@@ -27,29 +27,30 @@ class Main
                 
                 # For each term, get the departments
                 @terms.each do |term|
-                    @connection = BackendConnection.new(Parameters.new(term.termId, nil, nil, Parameters::TERM))
+                    @connection = BackendConnection.new(Parameters.new(term.category.id, nil, nil, Parameters::TERM))
                     @connection.open_connection
                     @depts = @connection.parseDepts
                     @connection.close_connection
                     term.depts = @depts
                     # For each department, get the courses
                     @depts.each do |dept|
-                        @connection = BackendConnection.new(Parameters.new(term.termId, dept.deptId, nil, Parameters::DEPT))
+                        @connection = BackendConnection.new(Parameters.new(term.category.id, dept.category.id, nil, Parameters::DEPT))
                         @connection.open_connection
                         @courses = @connection.parseCourses
                         @connection.close_connection
                         dept.courses = @courses
                         # For each course, get the sections
                         @courses.each do |course|
-                            @connection = BackendConnection.new(Parameters.new(term.termId, dept.deptId, course.courseId, Parameters::COURSE))
+                            @connection = BackendConnection.new(Parameters.new(term.category.id, dept.category.id, course.category.id, Parameters::COURSE))
                             @connection.open_connection
                             @sections = @connection.parseSections
                             @connection.close_connection 
                             course.sections = @sections
+                            puts "Parsed #{term.category.name} #{dept.category.name} #{course.category.name} at #{Time.new.strftime("%H:%M:%S")}"
+                            sleep((1+rand(3))) # Sleep for random time between 1 and 3 seconds. Don't spam servers.
                         end
                     end
                 end
-                
             elsif input == 2 # Output instructions
                 puts "Option 1 will scrape a single book from a random term, department, course and section"
             elsif input == 3 #force update
