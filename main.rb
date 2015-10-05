@@ -27,9 +27,27 @@ class Main
                 
                 # For each term, get the departments
                 @terms.each do |term|
-                    @connection = BackendConnection.new(Parameters.new(term.termId, nil, nil, nil, Parameters::TERM))
+                    @connection = BackendConnection.new(Parameters.new(term.termId, nil, nil, Parameters::TERM))
                     @connection.open_connection
+                    @depts = @connection.parseDepts
                     @connection.close_connection
+                    term.depts = @depts
+                    # For each department, get the courses
+                    @depts.each do |dept|
+                        @connection = BackendConnection.new(Parameters.new(term.termId, dept.deptId, nil, Parameters::DEPT))
+                        @connection.open_connection
+                        @courses = @connection.parseCourses
+                        @connection.close_connection
+                        dept.courses = @courses
+                        # For each course, get the sections
+                        @courses.each do |course|
+                            @connection = BackendConnection.new(Parameters.new(term.termId, dept.deptId, course.courseId, Parameters::COURSE))
+                            @connection.open_connection
+                            @sections = @connection.parseSections
+                            @connection.close_connection 
+                            course.sections = @sections
+                        end
+                    end
                 end
                 
             elsif input == 2 # Output instructions
