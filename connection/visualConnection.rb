@@ -7,8 +7,6 @@ require 'capybara/dsl'
 
 class VisualConnection < Connection
     
-	VISUAL_WEBPAGE = "TBWizardView"
-    
     # Set up defaults to use when opening a connection
     def initialize
         super
@@ -21,7 +19,7 @@ class VisualConnection < Connection
     def open_connection
         
         @session = Capybara::Session.new(:selenium)
-        @session.visit("/#{VISUAL_WEBPAGE}?#{COMMON_PARAMETERS}")
+        @session.visit("/#{VISUAL_WEBPAGE_FILE}?#{COMMON_PARAMETERS}")
         @page = @session.find(:xpath, '//body')
         check_connection
         

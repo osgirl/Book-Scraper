@@ -1,8 +1,10 @@
 #!/usr/bin/ruby
 
-require_relative 'book'
-require_relative 'connection'
-require_relative 'visualConnection'
+require_relative 'data_structures'
+require_relative 'connection/connection'
+require_relative 'connection/backendConnection'
+require_relative 'connection/visualConnection'
+require_relative 'connection/parameters'
 
 # Main class used as controller for the book scraper.
 # @Date Created: 10/02/15
@@ -11,16 +13,25 @@ require_relative 'visualConnection'
 class Main
 
     #main running function to be called to begin the game
-    def runProg
+    def run
 
         loop do
             @books = Hash.new()
             input = displayMenu
             if input == 1 
-                @connection = VisualConnection.new
+                @connection = BackendConnection.new
+                # Get the terms
                 @connection.open_connection
-                @connection.selectCourse
-                #@connection.close_connection
+                @terms = @connection.parseTerms
+                @connection.close_connection
+                
+                # For each term, get the departments
+                @terms.each do |term|
+                    @connection = BackendConnection.new(Parameters.new(term.termId, nil, nil, nil, Parameters::TERM))
+                    @connection.open_connection
+                    @connection.close_connection
+                end
+                
             elsif input == 2 # Output instructions
                 puts "Option 1 will scrape a single book from a random term, department, course and section"
             elsif input == 3 #force update
@@ -59,4 +70,4 @@ end
 
 #run the program
 driver = Main.new
-driver.runProg
+driver.run
