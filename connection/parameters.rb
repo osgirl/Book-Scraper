@@ -7,12 +7,11 @@ class Parameters
     attr_reader :termId
     attr_reader :deptId
     attr_reader :courseId
-    attr_reader :sectionId
     attr_reader :dropdown
     
-    # Parameters termId, deptId, courseId, and sectionId should either be nil or a valid value pulled from B&N site
+    # Parameters termId, deptId and courseId should either be nil or a valid value pulled from B&N site
     # Parameter dropdown should be one of the 3 constants, TERM, DEPT, COURSE
-    def initialize(termId, deptId, courseId, sectionId, dropdown)
+    def initialize(termId, deptId, courseId, dropdown)
         
         if termId.nil?
             raise "If term is nil, a backend connection cannot be established."
@@ -24,19 +23,12 @@ class Parameters
             @deptId = deptId
             if !courseId.nil?
                 @courseId = courseId
-                if !sectionId.nil?
-                    @sectionId = sectionId
-                else
-                    @sectionId = nil
-                end
             else
                 @courseId = nil
-                @sectionId = nil
             end
         else
             @deptId = nil
             @courseId = nil
-            @sectionId = nil
         end
         
         if DROPDOWN_OPTIONS.include?(dropdown)
@@ -59,10 +51,7 @@ class Parameters
         if !deptId.nil?
             rep = rep + "&deptId=#{@deptId}"
             if !courseId.nil?
-                rep = rep + "&courseId=#{@courseId}" 
-                if !sectionId.nil?
-                    rep = rep + "&sectionId=#{@sectionId}" 
-                end
+                rep = rep + "&courseId=#{@courseId}"
             end
         end
         
