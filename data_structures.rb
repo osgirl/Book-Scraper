@@ -56,6 +56,15 @@ class Term
         @termId = nil
     end
     
+    def to_s
+        rep = "ID: #{@termId} #{@termName}\n"
+        if !@depts.nil?
+            depts.each do |dept|
+                rep = "#{rep}\t#{dept.to_s}\n" 
+            end
+        end
+    end
+    
 end
 
 class Dept
