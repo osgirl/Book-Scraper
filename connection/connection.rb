@@ -20,7 +20,7 @@ class Connection
     # Ensure a connection has been established
     def check_connection
         
-        if @page.nil? 
+        if @session.nil? 
             raise "Unable to connect to webpage. Check your internet connection and the webpage URL."
 		end
         

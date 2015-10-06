@@ -19,37 +19,47 @@ class Main
             @books = Hash.new()
             input = displayMenu
             if input == 1 
-                @connection = BackendConnection.new
-                # Get the terms
-                @connection.open_connection
-                @terms = @connection.parseTerms
-                @connection.close_connection
-                
-                # For each term, get the departments
-                @terms.each do |term|
-                    @connection = BackendConnection.new(Parameters.new(term.category.id, nil, nil, Parameters::TERM))
+                begin
+                    @connection = BackendConnection.new
+                    # Get the terms
                     @connection.open_connection
-                    @depts = @connection.parseDepts
+                    @terms = @connection.parseTerms
                     @connection.close_connection
-                    term.depts = @depts
-                    # For each department, get the courses
-                    @depts.each do |dept|
-                        @connection = BackendConnection.new(Parameters.new(term.category.id, dept.category.id, nil, Parameters::DEPT))
+
+                    # For each term, get the departments
+                    @terms.each do |term|
+                        @connection = BackendConnection.new(Parameters.new(term.category.id, nil, nil, Parameters::TERM))
                         @connection.open_connection
-                        @courses = @connection.parseCourses
+                        @depts = @connection.parseDepts
                         @connection.close_connection
-                        dept.courses = @courses
-                        # For each course, get the sections
-                        @courses.each do |course|
-                            @connection = BackendConnection.new(Parameters.new(term.category.id, dept.category.id, course.category.id, Parameters::COURSE))
+                        term.depts = @depts
+                        # For each department, get the courses
+                        @depts.each do |dept|
+                            @connection = BackendConnection.new(Parameters.new(term.category.id, dept.category.id, nil, Parameters::DEPT))
                             @connection.open_connection
-                            @sections = @connection.parseSections
-                            @connection.close_connection 
-                            course.sections = @sections
-                            puts "Parsed #{term.category.name} #{dept.category.name} #{course.category.name} at #{Time.new.strftime("%H:%M:%S")}"
-                            sleep((1+rand(3))) # Sleep for random time between 1 and 3 seconds. Don't spam servers.
+                            @courses = @connection.parseCourses
+                            @connection.close_connection
+                            dept.courses = @courses
+                            # For each course, get the sections
+                            @courses.each do |course|
+                                if 1+rand(10) != 10
+                                    next
+                                end
+                                @connection = BackendConnection.new(Parameters.new(term.category.id, dept.category.id, course.category.id, Parameters::COURSE))
+                                @connection.open_connection
+                                @sections = @connection.parseSections
+                                @connection.close_connection 
+                                course.sections = @sections
+                                puts "Parsed #{term.category.name} #{dept.category.name} #{course.category.name} at #{Time.new.strftime("%H:%M:%S")}"
+                                sleep((1+rand(3))) # Sleep for random time between 1 and 3 seconds. Don't spam servers.
+                            end
                         end
                     end
+                rescue SystemExit, Interrupt # Catch ctrl + c and exit gracefully
+                    puts "Program interrupt received."
+                    break
+                rescue SocketError
+                    puts "Connection error at #{Time.new.strftime("%H:%M:%S")}"
                 end
             elsif input == 2 # Output instructions
                 puts "Option 1 will scrape a single book from a random term, department, course and section"

@@ -42,9 +42,12 @@ class BackendConnection < Connection
             @webpage = "#{BASE_WEBPAGE}#{BACKEND_WEBPAGE_FILE}?#{COMMON_PARAMETERS}#{@parameters.to_s}"    
         end
         
-        @session = Mechanize.new.get(@webpage)
-        @page = @session.body
+        # Wait 20 seconds max for connection
+        agent = Mechanize.new
+        agent.read_timeout = 20
+        @session = agent.get(@webpage)
         check_connection
+        @page = @session.body
         
     end
     
@@ -57,6 +60,11 @@ class BackendConnection < Connection
     
     # Return all possible terms
     def parseTerms
+        
+        if @session.nil?
+            raise "Unable to parse nil session." 
+        end
+        
         rows = @session.search('.bookRowContainer')
         if rows.nil? # either page loaded wrong or the schema has changed
             raise "Check your connection and ensure the HTML schema has not changed. Then, try again."
@@ -82,6 +90,10 @@ class BackendConnection < Connection
     
     def parseDepts
         
+        if @session.nil?
+            raise "Unable to parse nil session." 
+        end
+        
         depts = Array.new
         parseCategory.each do |category|
             dept = Dept.new
@@ -96,6 +108,10 @@ class BackendConnection < Connection
     
     def parseCourses
         
+        if @session.nil?
+            raise "Unable to parse nil session." 
+        end
+        
         courses = Array.new
         parseCategory.each do |category|
             course = Course.new
@@ -109,6 +125,10 @@ class BackendConnection < Connection
     end
     
     def parseSections
+        
+        if @session.nil?
+            raise "Unable to parse nil session." 
+        end
         
         sections = Array.new
         parseCategory.each do |category|
