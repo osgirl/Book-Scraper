@@ -88,9 +88,9 @@ end
 # Test 2: Pass in non Parameter dropdown options and ensure an object fails to be created
 begin
     a=Parameters.new(1234567,7654321,1234567,7654321,nil)
-    puts "Failed"
-rescue
     puts "Passed"
+rescue
+    puts "Failed"
 end
 begin
     a=Parameters.new(1234567,7654321,1234567,7654321,0)

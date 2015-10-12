@@ -2,7 +2,7 @@
 
 class Parameters
     
-    DROPDOWN_OPTIONS = [TERM = "term", DEPT = "dept", COURSE = "course"]
+    DROPDOWN_OPTIONS = [TERM = "term", DEPT = "dept", COURSE = "course", nil]
     
     attr_reader :termId
     attr_reader :deptId
@@ -66,7 +66,9 @@ class Parameters
             end
         end
         
-        rep = rep + "&dropdown=#{@dropdown}"
+        if !@dropdown.nil?
+            rep = rep + "&dropdown=#{@dropdown}"            
+        end
         
         return rep
     end
