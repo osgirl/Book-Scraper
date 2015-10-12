@@ -62,6 +62,7 @@ class Scrape
             end
         end
 	end
+end
 
 #
 #        rows = @page.search(".bookRowContainer") # collect all search rows

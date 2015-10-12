@@ -50,6 +50,8 @@ class VisualConnection < Connection
             raise "Check your connection and ensure the HTML schema has not changed. Then, try again."
         end
         
+        puts rows[0]
+        
 =begin
         form = @page.find(:xpath, '//*[@id="FindCourse"]')
         rows = form.all('.bookRowContainer') # collect all search rows
