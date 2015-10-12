@@ -9,19 +9,13 @@ require_relative '../data_structures'
 
 class BackendConnection < Connection
     
-    attr_accessor :parameters
+    
     attr_reader :webpage
     
     # Set up defaults to use when opening a connection
     def initialize(parameters = nil)
         
-        super()
-        
-        if !parameters.nil? and parameters.instance_of? Parameters
-            @parameters = parameters
-        else
-            @parameters = nil
-        end
+        super
         @webpage = nil
         
     end

@@ -8,7 +8,7 @@ require 'capybara/dsl'
 class VisualConnection < Connection
     
     # Set up defaults to use when opening a connection
-    def initialize
+    def initialize(parameters = nil)
         super
         Capybara.default_driver = :selenium
         Capybara.app_host = BASE_WEBPAGE
@@ -34,11 +34,22 @@ class VisualConnection < Connection
     end
     
     # Fill out the form and press submit button
-    def selectCourse 
+    # term instance_of? Term, dept instance_of? Dept, course instance_of? Course, section instance_of? Section
+    def selectCourse
  
         if @page.nil?
-            raise "Unable to work on a null connection."
+            raise "Unable to work on a nil connection."
         end
+        
+        if @parameters.nil? 
+            raise "Unable to scrape a book from a nil course. Provide VisualConnection with a valid Parameters list." 
+        end
+        
+        rows = @session.all('.bookRowContainer')
+        if rows.nil? # either page loaded wrong or the schema has changed
+            raise "Check your connection and ensure the HTML schema has not changed. Then, try again."
+        end
+        
 =begin
         form = @page.find(:xpath, '//*[@id="FindCourse"]')
         rows = form.all('.bookRowContainer') # collect all search rows

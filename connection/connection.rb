@@ -10,11 +10,19 @@ class Connection
     
     attr_accessor :page
     attr_accessor :session
+    attr_accessor :parameters
     
     # Set up defaults to use when opening a connection
-    def initialize
+    def initialize(parameters)
         @page = nil
         @session = nil
+        
+        if !parameters.nil? and parameters.instance_of? Parameters
+            @parameters = parameters
+        else
+            @parameters = nil
+        end
+        
     end
     
     # Ensure a connection has been established
