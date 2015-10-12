@@ -63,45 +63,6 @@ class Scrape
         end
 	end
 
-	# Ensure the record is not a duplicate record or a supplement to a previous record
-	def self.validate? (record)
-		if record.type.casecmp("Supplement") == 0 || record.type.casecmp("Supplemental") == 0 || record.type == "" || record.location == "--" || record.location.casecmp("Supplement") == 0
-			return false
-		else
-			return true
-		end
-	end
-
-	#ensure startDate,endDate are valid DateTime objects, and that endDate is later than startDate
-	#return an array of dates with the largest possible difference between each date being MAXIMUM_CONNECTION_LENGTH in days
-	def parseDates(startDate,endDate)
-		# ensure date passed as a parameter is a DateTime object
-		if !startDate.is_a? DateTime or !endDate.is_a? DateTime
-			raise "date is not a DateTime."
-		end
-
-		dateDifference = endDate-startDate
-
-		#ensure endDate is later than startDate
-		if dateDifference.to_i < 0
-			raise "end date must be greater than start date"
-		end
-
-		#create an array of DateTime objects that have an acceptable length to pass to connection class
-		#ie ensure that the greatest time difference between any two dates is less than the MAXIMUM_RECORD_LENGTH
-		dates = []
-		dates.push startDate
-		while dateDifference.to_i > MAXIMUM_CONNECTION_LENGTH
-			startDate = startDate + MAXIMUM_CONNECTION_LENGTH
-			dates.push startDate
-
-			dateDifference = endDate-startDate
-		end
-		dates.push endDate
-
-		return dates
-	end
-end
 #
 #        rows = @page.search(".bookRowContainer") # collect all search rows
 #        first_row = rows[0]
