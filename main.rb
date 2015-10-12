@@ -1,10 +1,7 @@
 #!/usr/bin/ruby
 
 require_relative 'data_structures'
-require_relative 'connection/connection'
-require_relative 'connection/backendConnection'
-require_relative 'connection/visualConnection'
-require_relative 'connection/parameters'
+require_relative 'scrape'
 
 # Main class used as controller for the book scraper.
 # @Date Created: 10/02/15
@@ -20,41 +17,7 @@ class Main
             input = displayMenu
             if input == 1 
                 begin
-                    @connection = BackendConnection.new
-                    # Get the terms
-                    @connection.open_connection
-                    @terms = @connection.parseTerms
-                    @connection.close_connection
-
-                    # For each term, get the departments
-                    @terms.each do |term|
-                        @connection = BackendConnection.new(Parameters.new(term.category.id, nil, nil, Parameters::TERM))
-                        @connection.open_connection
-                        @depts = @connection.parseDepts
-                        @connection.close_connection
-                        term.depts = @depts
-                        # For each department, get the courses
-                        @depts.each do |dept|
-                            @connection = BackendConnection.new(Parameters.new(term.category.id, dept.category.id, nil, Parameters::DEPT))
-                            @connection.open_connection
-                            @courses = @connection.parseCourses
-                            @connection.close_connection
-                            dept.courses = @courses
-                            # For each course, get the sections
-                            @courses.each do |course|
-                                if 1+rand(10) != 10
-                                    next
-                                end
-                                @connection = BackendConnection.new(Parameters.new(term.category.id, dept.category.id, course.category.id, Parameters::COURSE))
-                                @connection.open_connection
-                                @sections = @connection.parseSections
-                                @connection.close_connection 
-                                course.sections = @sections
-                                puts "Parsed #{term.category.name} #{dept.category.name} #{course.category.name} at #{Time.new.strftime("%H:%M:%S")}"
-                                sleep((1+rand(3))) # Sleep for random time between 1 and 3 seconds. Don't spam servers.
-                            end
-                        end
-                    end
+                    Scrape.new.scrape
                 rescue SystemExit, Interrupt # Catch ctrl + c and exit gracefully
                     puts "Program interrupt received."
                     break
