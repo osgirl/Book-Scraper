@@ -43,16 +43,18 @@ class Scrape
                     @connection.close_connection 
                     course.sections = @sections
                     # For each section, get the books
-                    puts "Parsing #{term.category.name} #{dept.category.name} #{course.category.name} at #{Time.new.strftime("%H:%M:%S")}"
+                    puts "Began parsing #{term.category.name} #{dept.category.name} #{course.category.name} at #{Time.new.strftime("%H:%M:%S")}"
                     @sections.each do |section|
                         puts "Scraping books for section #{section.category.name}"
                         @connection = VisualConnection.new(Parameters.new(term.category.id, dept.category.name, course.category.name, section.category.name, nil))
+                        #@connection = VisualConnection.new(Parameters.new('67388865', 'AEROENG', '3560', '6747', nil))
                         @connection.open_connection
                         @connection.selectCourse
                         @connection.submitRequest
+                        @connection.scrapeBooks
                         @connection.close_connection
                     end
-                    puts "Parsed #{term.category.name} #{dept.category.name} #{course.category.name} at #{Time.new.strftime("%H:%M:%S")}"
+                    puts "Finished parsing #{term.category.name} #{dept.category.name} #{course.category.name} at #{Time.new.strftime("%H:%M:%S")}"
 
                     #sleep((1+rand(3))) # Sleep for random time between 1 and 3 seconds. Don't spam servers.
                 end

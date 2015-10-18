@@ -29,7 +29,7 @@ class Book
 
 	# return a string representation of the record
 	def to_s
-		return "#{@title} by #{@author} edition #{@edition} published by #{@publisher}"
+        return "#{@title} by #{@author} edition #{@edition} published by #{@publisher} with ISBN: #{@isbn}"
 	end
 
 	# Other possible methods relevant to the record class

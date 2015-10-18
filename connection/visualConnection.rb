@@ -50,6 +50,7 @@ class VisualConnection < Connection
             raise "Check your connection and ensure the HTML schema has not changed. Then, try again."
         end
         
+        # 3 parallel arrays simplify the amount of repeated code.
         headerElements = ['.termHeader', '.deptSelectInput', '.courseSelectInput', '.sectionSelectInput']
         childElements = ['.termHeader li', '.deptColumn li', '.courseColumn li', '.sectionColumn li']
         paramValues = [parameters.termId, parameters.deptId, parameters.courseId, parameters.sectionId]
@@ -58,14 +59,16 @@ class VisualConnection < Connection
         4.times do |currElement|
             rows[0].find(headerElements[currElement]).click 
             foundElement = false
-            @session.all('.bookRowContainer')[0].all(childElements[currElement]).each do |element|
-                if currElement === 0 
+            if currElement === 0 # Term requires special handling
+                @session.all('.bookRowContainer')[0].all(childElements[currElement]).each do |element|
                     if element['data-optionvalue'].eql? paramValues[currElement]
                         element.click
                         foundElement = true
                         break
                     end
-                else
+                end
+            else # Select dept, course or section depending on the current element value
+                @session.all('.bookRowContainer')[0].all(childElements[currElement]).each do |element|
                     if element.text.eql? paramValues[currElement]
                         element.click
                         foundElement = true
@@ -77,9 +80,67 @@ class VisualConnection < Connection
                 raise "Unable to find element #{paramValues[currElement]} on page." 
             end
         end
-    
-    @page.find_by_id('findMaterialButton').click
         
     end
+
+    # Submit the page 
+    def submitRequest
+        @page.find_by_id('findMaterialButton').click
+    end
     
+    # Scrape books from the B&N form submission page
+    def scrapeBooks
+        
+        # Array of book entities
+        books = Array.new
+        
+        @page.all('.cm_tb_bookInfo').each do |bookInfo|
+            if !bookInfo.find_by_id('skipNavigationToThisElement').text.eql? 'COURSE MATERIALS SELECTION PENDING'
+                book = Book.new
+                
+                #Grab title and author
+                book.title = bookInfo.find('a').text
+                book.author = bookInfo.find('h2 span i').text.scan(/By (.*)/)[0][0]
+                # Scrape publisher, edition and isbn
+                bookInfo.all('li').each do |info|
+                    
+                    # Figure out if it is an edition, publisher or isbn
+                    elem = info.text.scan(/EDITION: (.*)/)
+                    if elem.size != 0
+                        book.edition = elem[0][0]
+                        next
+                    end
+                    elem = info.text.scan(/PUBLISHER: (.*)/)
+                    if elem.size != 0
+                        book.publisher = elem[0][0]
+                        next
+                    end
+                    elem = info.text.scan(/ISBN: (.*)/)
+                    if elem.size != 0
+                        book.isbn = elem[0][0]
+                        next
+                    end
+                    
+                    raise "Text: #{info.text} does not match as an Edition, Publisher or ISBN."
+                    
+                end
+                
+                # Scrape image link
+                @page.all('.cm_tb_image a img').each do |image|
+                    book.image = image['src'] if image['title'].eql? book.title 
+                end
+                
+                puts "Book found: #{book.to_s}"
+                books << book
+            end
+        end
+        
+        if books.size === 0
+            puts "No Book found. Materials pending."
+        end
+        
+        return books
+        
+    end
+
 end
