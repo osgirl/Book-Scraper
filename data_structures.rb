@@ -14,8 +14,6 @@ class Book
     attr_accessor :publisher
     # book edition
     attr_accessor :edition
-    # Price of the book
-    attr_accessor :price
     # Image of the book 
     attr_accessor :image
 
@@ -26,15 +24,12 @@ class Book
 		@author = ""
         @publisher = ""
         @edition = ""
-        @price = 0
         @image = nil
 	end
 
 	# return a string representation of the record
 	def to_s
-
 		return "#{@title} by #{@author} edition #{@edition} published by #{@publisher}"
-
 	end
 
 	# Other possible methods relevant to the record class
