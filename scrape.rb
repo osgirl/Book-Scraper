@@ -49,7 +49,7 @@ class Scrape
                     puts "Parsing #{term.category.name} #{dept.category.name} #{course.category.name} at #{Time.new.strftime("%H:%M:%S")}"
                     @sections.each do |section|
                         puts "Visually connecting to: #{section.category.id}"
-                        @connection = VisualConnection.new(Parameters.new(term.category.id, dept.category.id, course.category.id, section.category.id, nil))
+                        @connection = VisualConnection.new(Parameters.new(term.category.id, dept.category.name, course.category.name, section.category.name, nil))
                         @connection.open_connection
                         @connection.selectCourse
                         @connection.close_connection

@@ -50,25 +50,35 @@ class VisualConnection < Connection
             raise "Check your connection and ensure the HTML schema has not changed. Then, try again."
         end
         
-        puts rows[0]
+        headerElements = ['.termHeader', '.deptSelectInput', '.courseSelectInput', '.sectionSelectInput']
+        childElements = ['.termHeader li', '.deptColumn li', '.courseColumn li', '.sectionColumn li']
+        paramValues = [parameters.termId, parameters.deptId, parameters.courseId, parameters.sectionId]
         
-=begin
-        form = @page.find(:xpath, '//*[@id="FindCourse"]')
-        rows = form.all('.bookRowContainer') # collect all search rows
-        first_row = rows[0]
-        puts first_row.path
-        term_options = first_row.all('li.termOption')
-        option = @page.find(:xpath, '/html/body/section/form/div/div[1]/div[2]/div[1]/ul/li[1]/div/div[2]/ul/li[1]')
-        puts option
-        for term in term_options
-            puts term.text
-            puts term.value
-            puts term.path
+        # Click on the header element
+        4.times do |currElement|
+            rows[0].find(headerElements[currElement]).click 
+            foundElement = false
+            @session.all('.bookRowContainer')[0].all(childElements[currElement]).each do |element|
+                if currElement === 0 
+                    if element['data-optionvalue'].eql? paramValues[currElement]
+                        element.click
+                        foundElement = true
+                        break
+                    end
+                else
+                    if element.text.eql? paramValues[currElement]
+                        element.click
+                        foundElement = true
+                        break
+                    end 
+                end
+            end
+            if !foundElement 
+                raise "Unable to find element #{paramValues[currElement]} on page." 
+            end
         end
-        puts term_options[0].path
-
-        all('a').each { |a| a[:href] }
-=end
+    
+    @page.find_by_id('findMaterialButton').click
         
     end
     
