@@ -39,6 +39,24 @@ class Book
 
 end
 
+# Structure to store course information
+class Course
+    # Store the department
+    attr_accessor :department
+    # Store the course number
+    attr_accessor :number
+    
+    def initialize
+        @department = nil
+        @number = nil 
+    end
+    
+    def to_s
+        return "#{@department} #{@number}" 
+    end
+    
+end
+
 # Common structure for all Terms, Depts, Courses and Sections
 class Category
     # Friendly name of this category
