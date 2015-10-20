@@ -101,6 +101,13 @@ class VisualConnection < Connection
                 #Grab title and author
                 book.title = bookInfo.find('a').text
                 book.author = bookInfo.find('h2 span i').text.scan(/By (.*)/)[0][0]
+                
+                # Grab course information
+                course = Course.new
+                course.department = parameters.deptId
+                course.number = parameters.courseId
+                book.courses << course
+                
                 # Scrape publisher, edition and isbn
                 bookInfo.all('li').each do |info|
                     

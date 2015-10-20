@@ -8,10 +8,12 @@ require_relative 'connection/parameters'
 
 # Scrape class :    Scrape books from the B&N site utilitizing the provided connection classes
 # @date created:	10/12/15
-class Scrape 
+class Scrape
 
+    attr_reader :books
+    
 	def initialize
-        # Nothing to do currently
+        @books = Array.new
 	end
 
 	def scrape
@@ -51,8 +53,36 @@ class Scrape
                         @connection.open_connection
                         @connection.selectCourse
                         @connection.submitRequest
-                        @connection.scrapeBooks
+                        scrapedBooks = @connection.scrapeBooks
+                        # for each book, if it already exists, add the course to it, otherwise, add it to books array
+                        scrapedBooks.each do |scrapedBook|
+                            exists = false
+                            @books.each do |book|
+                                if book.to_s.eql? scrapedBook.to_s
+                                    book.courses.each do |course|
+                                        # If the course is already inside the book, don't add it again
+                                        if course.to_s.eql? scrapedBook.courses[0].to_s
+                                            exists = true
+                                            break
+                                        end
+                                    end
+                                    # Course was not inside the book. Append it onto the list of books
+                                    if !exists
+                                        book.courses << scrapedBook.courses[0]
+                                        exists = true
+                                    end
+                                    break
+                                end
+                            end 
+                            @books << scrapedBook if !exists
+                        end
                         @connection.close_connection
+                        @books.each do |book|
+                            puts book.to_s
+                            book.courses.each do |course|
+                                puts course 
+                            end
+                        end
                     end
                     puts "Finished parsing #{term.category.name} #{dept.category.name} #{course.category.name} at #{Time.new.strftime("%H:%M:%S")}"
 
