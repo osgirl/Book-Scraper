@@ -16,6 +16,8 @@ class Book
     attr_accessor :edition
     # Image of the book 
     attr_accessor :image
+    # Array of courses this book belongs to
+    attr_accessor :courses
 
 	# Create a single record
 	def initialize
@@ -25,6 +27,7 @@ class Book
         @publisher = ""
         @edition = ""
         @image = nil
+        @courses = Array.new
 	end
 
 	# return a string representation of the record
