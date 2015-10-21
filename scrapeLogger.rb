@@ -1,6 +1,6 @@
 #!/usr/bin/ruby
 
-class Logger
+class ScrapeLogger
    
     LOGFILE = 'scraper.log'
     
