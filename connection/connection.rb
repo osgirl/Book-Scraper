@@ -1,5 +1,7 @@
 #!/usr/bin/ruby
 
+require_relative '../scrapeLogger'
+
 class Connection
     
     # Url of the webpage to connect to every time a new connection starts.
@@ -11,6 +13,9 @@ class Connection
     attr_accessor :page
     attr_accessor :session
     attr_accessor :parameters
+    
+    # Class variable logger 
+    @@logger = ScrapeLogger.new
     
     # Set up defaults to use when opening a connection
     def initialize(parameters)
@@ -29,6 +34,7 @@ class Connection
     def check_connection
         
         if @session.nil? 
+            @@logger.append "Unable to connect to webpage. Internet connection may be spotty or disconnected. Webpage URL also may be invalid."
             raise "Unable to connect to webpage. Check your internet connection and the webpage URL."
 		end
         

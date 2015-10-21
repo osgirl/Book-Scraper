@@ -1,5 +1,7 @@
 #!/usr/bin/ruby
 
+require_relative '../scrapeLogger'
+
 class Parameters
     
     DROPDOWN_OPTIONS = [TERM = "term", DEPT = "dept", COURSE = "course", nil]
@@ -10,11 +12,16 @@ class Parameters
     attr_reader :sectionId
     attr_reader :dropdown
     
+    # Class variable logger 
+    @@logger = ScrapeLogger.new
+    
     # Parameters termId, deptId and courseId should either be nil or a valid value pulled from B&N site
     # Parameter dropdown should be one of the 3 constants, TERM, DEPT, COURSE
     def initialize(termId, deptId, courseId, sectionId, dropdown)
         
         if termId.nil?
+            @@logger.append "Unable to establish backend connection because term ID provided is nil"
+            @@logger.append "Raising exception and terminating unless rescued."
             raise "If term is nil, a backend connection cannot be established."
         end
         @termId = termId
@@ -42,12 +49,18 @@ class Parameters
         if DROPDOWN_OPTIONS.include?(dropdown)
             @dropdown = dropdown
         else
+            @@logger.append "Invalid dropdown option provided."
+            @@logger.append "Raising exception and terminating unless rescued."
             raise "Not a valid dropdown option."
         end
         
         if @dropdown === DEPT and @deptId.nil?
+            @@logger.append "Invalid dropdown option provided."
+            @@logger.append "Raising exception and terminating unless rescued."
             raise "Cannot dropdown on nil department"
         elsif @dropdown === COURSE and @courseId.nil?
+            @@logger.append "Invalid dropdown option provided."
+            @@logger.append "Raising exception and terminating unless rescued."
             raise "Cannot dropdown on nil course"
         end
         

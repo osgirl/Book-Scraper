@@ -38,15 +38,18 @@ class VisualConnection < Connection
     def selectCourse
  
         if @page.nil?
+            @@logger.append "Unable to parse nil session. Scraping will terminate unless rescued."
             raise "Unable to work on a nil connection."
         end
         
         if @parameters.nil? 
+            @@logger.append "Unable to scrape a book from a nil course. Provide VisualConnection with a valid Parameters list." 
             raise "Unable to scrape a book from a nil course. Provide VisualConnection with a valid Parameters list." 
         end
         
         rows = @session.all('.bookRowContainer')
         if rows.nil? # either page loaded wrong or the schema has changed
+            @@logger.append "Check your connection and ensure the HTML schema has not changed. Then, try again. Scraping will terminate unless rescued."
             raise "Check your connection and ensure the HTML schema has not changed. Then, try again."
         end
         
@@ -76,7 +79,8 @@ class VisualConnection < Connection
                     end 
                 end
             end
-            if !foundElement 
+            if !foundElement
+                @@logger.append "Unable to find element #{paramValues[currElement]} on page."
                 raise "Unable to find element #{paramValues[currElement]} on page." 
             end
         end
@@ -128,6 +132,7 @@ class VisualConnection < Connection
                         next
                     end
                     
+                    @@logger.append "Text: #{info.text} does not match as an Edition, Publisher or ISBN."
                     raise "Text: #{info.text} does not match as an Edition, Publisher or ISBN."
                     
                 end

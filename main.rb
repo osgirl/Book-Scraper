@@ -2,13 +2,16 @@
 
 require_relative 'data_structures'
 require_relative 'scrape'
-require_relative 'logger'
+require_relative 'scrapeLogger'
 
 # Main class used as controller for the book scraper.
 # @Date Created: 10/02/15
 # run this program with command 'ruby main.rb'
 
 class Main
+    
+    # Class variable logger 
+    @@logger = ScrapeLogger.new
 
     #main running function to be called to begin the game
     def run
@@ -21,11 +24,11 @@ class Main
                     Scrape.new.scrape
                 rescue SystemExit, Interrupt # Catch ctrl + c and exit gracefully
                     puts "Program interrupt received."
-                    @logger.append "Program interrupt received"
+                    @@logger.append "Program interrupt received"
                     break
                 rescue SocketError
                     puts "Connection error at #{Time.new.strftime("%H:%M:%S")}"
-                    @logger.append "Connection error"
+                    @@logger.append "Connection error"
                 end
             elsif input == 2 # Output instructions
                 puts "Option 1 will scrape all books from the B&N website associated with the OSU department courses."
@@ -37,7 +40,6 @@ class Main
     
     def initialize
         @connection = nil
-        @logger = Logger.new
     end
 
     def displayMenu

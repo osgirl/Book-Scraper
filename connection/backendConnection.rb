@@ -56,11 +56,13 @@ class BackendConnection < Connection
     def parseTerms
         
         if @session.nil?
+            @@logger.append "Unable to parse nil session. Scraping will terminate unless rescued."
             raise "Unable to parse nil session." 
         end
         
         rows = @session.search('.bookRowContainer')
         if rows.nil? # either page loaded wrong or the schema has changed
+            @@logger.append "Check your connection and ensure the HTML schema has not changed. Then, try again. Scraping will terminate unless rescued."
             raise "Check your connection and ensure the HTML schema has not changed. Then, try again."
         end
         
@@ -85,6 +87,7 @@ class BackendConnection < Connection
     def parseDepts
         
         if @session.nil?
+            @@logger.append "Unable to parse nil session. Scraping will terminate unless rescued."
             raise "Unable to parse nil session." 
         end
         
@@ -103,6 +106,7 @@ class BackendConnection < Connection
     def parseCourses
         
         if @session.nil?
+            @@logger.append "Unable to parse nil session. Scraping will terminate unless rescued."
             raise "Unable to parse nil session." 
         end
         
@@ -121,6 +125,7 @@ class BackendConnection < Connection
     def parseSections
         
         if @session.nil?
+            @@logger.append "Unable to parse nil session. Scraping will terminate unless rescued."
             raise "Unable to parse nil session." 
         end
         
