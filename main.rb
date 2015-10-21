@@ -2,6 +2,7 @@
 
 require_relative 'data_structures'
 require_relative 'scrape'
+require_relative 'logger'
 
 # Main class used as controller for the book scraper.
 # @Date Created: 10/02/15
@@ -20,12 +21,14 @@ class Main
                     Scrape.new.scrape
                 rescue SystemExit, Interrupt # Catch ctrl + c and exit gracefully
                     puts "Program interrupt received."
+                    @logger.append "Program interrupt received"
                     break
                 rescue SocketError
                     puts "Connection error at #{Time.new.strftime("%H:%M:%S")}"
+                    @logger.append "Connection error"
                 end
             elsif input == 2 # Output instructions
-                puts "Option 1 will scrape a single book from a random term, department, course and section"
+                puts "Option 1 will scrape all books from the B&N website associated with the OSU department courses."
             elsif input == 3 #force update
                 break
             end
@@ -34,6 +37,7 @@ class Main
     
     def initialize
         @connection = nil
+        @logger = Logger.new
     end
 
     def displayMenu
