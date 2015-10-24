@@ -107,10 +107,8 @@ class VisualConnection < Connection
                 book.author = bookInfo.find('h2 span i').text.scan(/By (.*)/)[0][0]
                 
                 # Grab course information
-                course = Course.new
-                course.department = parameters.deptId
-                course.number = parameters.courseId
-                book.courses << course
+                book.course.department = parameters.deptId
+                book.course.number = parameters.courseId
                 
                 # Scrape publisher, edition and isbn
                 bookInfo.all('li').each do |info|
@@ -142,7 +140,6 @@ class VisualConnection < Connection
                     book.image = image['src'] if image['title'].eql? book.title 
                 end
                 
-                puts "Book found: #{book.to_s}"
                 books << book
             end
         end

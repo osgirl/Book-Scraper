@@ -55,45 +55,20 @@ class Scrape
                     @@logger.append "Began parsing #{term.category.name} #{dept.category.name} #{course.category.name}"
                     @sections.each do |section|
                         puts "Scraping section: #{section.category.name}"
-                        @connection = VisualConnection.new(Parameters.new(term.category.id, dept.category.name, course.category.name, section.category.name, nil))
-                        #@connection = VisualConnection.new(Parameters.new('67388865', 'AEROENG', '3560', '6747', nil))
+                        #@connection = VisualConnection.new(Parameters.new(term.category.id, dept.category.name, course.category.name, section.category.name, nil))
+                        @connection = VisualConnection.new(Parameters.new('67388865', 'AEROENG', '3560', '6747', nil))
                         @connection.open_connection
                         @connection.selectCourse
                         @connection.submitRequest
                         scrapedBooks = @connection.scrapeBooks
-                        # for each book, if it already exists, add the course to it, otherwise, add it to books array
+                        # for each scraped book, move it onto the stack of books
                         scrapedBooks.each do |scrapedBook|
-                            exists = false
-                            @books.each do |book|
-                                if book.to_s.eql? scrapedBook.to_s
-                                    book.courses.each do |course|
-                                        # If the course is already inside the book, don't add it again
-                                        if course.to_s.eql? scrapedBook.courses[0].to_s
-                                            exists = true
-                                            break
-                                        end
-                                    end
-                                    # Course was not inside the book. Append it onto the list of books
-                                    if !exists
-                                        book.courses << scrapedBook.courses[0]
-                                        exists = true
-                                    end
-                                    break
-                                end
-                            end 
-                            @books << scrapedBook if !exists
+                            @books << scrapedBook
+                            puts scrapedBook.to_s
                         end
                         @connection.close_connection
-                        @books.each do |book|
-                            puts book.to_s
-                            book.courses.each do |course|
-                                puts course 
-                            end
-                        end
                     end
                     @@logger.append "Finished parsing #{term.category.name} #{dept.category.name} #{course.category.name}"
-
-                    #sleep((1+rand(3))) # Sleep for random time between 1 and 3 seconds. Don't spam servers.
                 end
             end
         end

@@ -17,7 +17,7 @@ class Book
     # Image of the book 
     attr_accessor :image
     # Array of courses this book belongs to
-    attr_accessor :courses
+    attr_accessor :course
 
 	# Create a single record
 	def initialize
@@ -27,15 +27,18 @@ class Book
         @publisher = ""
         @edition = ""
         @image = nil
-        @courses = Array.new
+        @course = Course.new
 	end
 
 	# return a string representation of the record
 	def to_s
-        return "#{@title} by #{@author} edition #{@edition} published by #{@publisher} with ISBN: #{@isbn}"
+        return "#{@title} by #{@author} edition #{@edition} published by #{@publisher} with ISBN: #{@isbn} for course #{@course.to_s}"
 	end
 
-	# Other possible methods relevant to the record class
+    # Append record to a provided file
+    def append(filename)
+         
+    end
 
 end
 
