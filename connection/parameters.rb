@@ -86,4 +86,22 @@ class Parameters
         return rep
     end
     
+    # Save this to filename
+    def saveParameters(filename)
+        open(filename, 'w') do |fout|
+            fout << "#{@termId}|#{@deptId}|#{@courseId}|#{@sectionId}|#{@dropdown}\n"
+        end 
+    end
+    
+    # load the first line of filename into a Parameters object
+    def self.loadCurrentParameters(filename)
+        lines = nil
+        open(filename, 'r') do |fin|
+            lines = fin.readline.chomp!.split('|')
+        end 
+        
+        return Parameters.new(lines[0], lines[1], lines[2], lines[3], lines[4])
+        
+    end
+    
 end
