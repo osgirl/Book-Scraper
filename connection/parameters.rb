@@ -6,11 +6,11 @@ class Parameters
     
     DROPDOWN_OPTIONS = [TERM = "term", DEPT = "dept", COURSE = "course", nil]
     
-    attr_reader :termId
-    attr_reader :deptId
-    attr_reader :courseId
-    attr_reader :sectionId
-    attr_reader :dropdown
+    attr_accessor :termId
+    attr_accessor :deptId
+    attr_accessor :courseId
+    attr_accessor :sectionId
+    attr_accessor :dropdown
     
     # Class variable logger 
     @@logger = ScrapeLogger.new

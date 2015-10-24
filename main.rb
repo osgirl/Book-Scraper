@@ -22,6 +22,8 @@ class Main
             if input == 1 
                 begin
                     Scrape.new.scrape
+                    puts "Scraping Complete."
+                    @@logger.append "Scraping Complete."
                 rescue SystemExit, Interrupt # Catch ctrl + c and exit gracefully
                     puts "Program interrupt received."
                     @@logger.append "Program interrupt received"

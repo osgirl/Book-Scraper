@@ -20,7 +20,7 @@ class Scrape
     
 	def initialize
         @next = nil
-        @next = Parameters.loadCurrentParameters(lastScrapedFile) if File.file?(LastScrapedFile) 
+        @next = Parameters.loadCurrentParameters(LastScrapedFile) if File.file?(LastScrapedFile) 
 	end
 
 	def scrape
@@ -32,6 +32,13 @@ class Scrape
 
         # For each term, get the departments
         @terms.each do |term|
+            if (!@next.nil? and !@next.termId.nil?)
+                if term.category.id.eql? @next.termId 
+                    @next.termId = nil
+                else
+                    next
+                end
+            end
             puts "Scraping term: #{term.category.name}"
             @connection = BackendConnection.new(Parameters.new(term.category.id, nil, nil, nil,Parameters::TERM))
             @connection.open_connection
@@ -39,6 +46,13 @@ class Scrape
             @connection.close_connection
             # For each department, get the courses
             @depts.each do |dept|
+                if (!@next.nil? and !@next.deptId.nil?)
+                    if dept.category.id.eql? @next.deptId 
+                        @next.deptId = nil
+                    else
+                        next
+                    end
+                end
                 puts "Scraping department: #{dept.category.name}"
                 @connection = BackendConnection.new(Parameters.new(term.category.id, dept.category.id, nil, nil,Parameters::DEPT))
                 @connection.open_connection
@@ -46,6 +60,13 @@ class Scrape
                 @connection.close_connection
                 # For each course, get the sections
                 @courses.each do |course|
+                    if (!@next.nil? and !@next.courseId.nil?)
+                        if course.category.id.eql? @next.courseId 
+                            @next.courseId = nil
+                        else
+                            next
+                        end
+                    end
                     puts "Scraping course: #{course.category.name}"
                     @connection = BackendConnection.new(Parameters.new(term.category.id, dept.category.id, course.category.id, nil, Parameters::COURSE))
                     @connection.open_connection
@@ -54,6 +75,14 @@ class Scrape
                     # For each section, get the books
                     @@logger.append "Began parsing #{term.category.name} #{dept.category.name} #{course.category.name}"
                     @sections.each do |section|
+                        if (!@next.nil? and !@next.sectionId.nil?)
+                            if section.category.id.eql? @next.sectionId 
+                                @next = nil
+                                next
+                            else
+                                next
+                            end
+                        end
                         puts "Scraping section: #{section.category.name}"
                         @connection = VisualConnection.new(Parameters.new(term.category.id, dept.category.name, course.category.name, section.category.name, nil))
                         #@connection = VisualConnection.new(Parameters.new('67388865', 'AEROENG', '3560', '6747', nil))
@@ -67,6 +96,8 @@ class Scrape
                             puts scrapedBook.to_s
                         end
                         @connection.close_connection
+                        # Save the parameters to a file. Signifies it being the last file scraped
+                        Parameters.new(term.category.id, dept.category.id, course.category.id, section.category.id, nil).saveParameters(LastScrapedFile)
                     end
                     @@logger.append "Finished parsing #{term.category.name} #{dept.category.name} #{course.category.name}"
                 end
