@@ -78,34 +78,23 @@ end
 
 class Term
     
-    # An array to store all departments associated with this term
-    attr_accessor :depts
     attr_accessor :category
     
-    def initialize 
-        @depts = nil
+    def initialize
         @category = Category.new
     end
     
     def to_s
         rep = "ID: #{@category.id} #{@category.name}\n"
-        if !@depts.nil?
-            depts.each do |dept|
-                rep = "#{rep}\t#{dept.to_s}\n" 
-            end
-        end
     end
     
 end
 
 class Dept
     
-    # An array to store all courses associated with this department
-    attr_accessor :courses
     attr_accessor :category
     
-    def initialize 
-        @courses = nil
+    def initialize
         @category = Category.new
     end
     
@@ -113,12 +102,9 @@ end
 
 class Course
     
-    # An array to store all sections associated with this course
-    attr_accessor :sections
     attr_accessor :category
     
-    def initialize 
-        @sections = nil
+    def initialize
         @category = Category.new
     end
     
