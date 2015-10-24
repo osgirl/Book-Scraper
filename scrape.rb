@@ -10,14 +10,12 @@ require_relative 'scrapeLogger'
 # Scrape class :    Scrape books from the B&N site utilitizing the provided connection classes
 # @date created:	10/12/15
 class Scrape
-
-    attr_reader :books
     
     # Class variable logger 
     @@logger = ScrapeLogger.new
     
 	def initialize
-        @books = Array.new
+        # Nothing to do here atm
 	end
 
 	def scrape
@@ -55,15 +53,15 @@ class Scrape
                     @@logger.append "Began parsing #{term.category.name} #{dept.category.name} #{course.category.name}"
                     @sections.each do |section|
                         puts "Scraping section: #{section.category.name}"
-                        #@connection = VisualConnection.new(Parameters.new(term.category.id, dept.category.name, course.category.name, section.category.name, nil))
-                        @connection = VisualConnection.new(Parameters.new('67388865', 'AEROENG', '3560', '6747', nil))
+                        @connection = VisualConnection.new(Parameters.new(term.category.id, dept.category.name, course.category.name, section.category.name, nil))
+                        #@connection = VisualConnection.new(Parameters.new('67388865', 'AEROENG', '3560', '6747', nil))
                         @connection.open_connection
                         @connection.selectCourse
                         @connection.submitRequest
                         scrapedBooks = @connection.scrapeBooks
-                        # for each scraped book, move it onto the stack of books
+                        # for each scraped book, move it onto the csv of books
                         scrapedBooks.each do |scrapedBook|
-                            @books << scrapedBook
+                            scrapedBook.append('books.csv')
                             puts scrapedBook.to_s
                         end
                         @connection.close_connection

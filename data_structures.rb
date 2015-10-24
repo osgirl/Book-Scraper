@@ -37,7 +37,9 @@ class Book
 
     # Append record to a provided file
     def append(filename)
-         
+        open(filename, 'a') do |fout|
+            fout << "#{@isbn}|#{@title}|#{@author}|#{@publisher}|#{@edition}|#{@course.department}|#{@course.number}|#{@image}\n"
+        end 
     end
 
 end
