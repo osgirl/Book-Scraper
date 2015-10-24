@@ -14,8 +14,13 @@ class Scrape
     # Class variable logger 
     @@logger = ScrapeLogger.new
     
+    # Store the next set of parameters in the case that this is a continuation of a previous scrape
+    LastScrapedFile = 'last.dat'
+    attr_accessor :next
+    
 	def initialize
-        # Nothing to do here atm
+        @next = nil
+        @next = Parameters.loadCurrentParameters(lastScrapedFile) if File.file?(LastScrapedFile) 
 	end
 
 	def scrape
@@ -32,7 +37,6 @@ class Scrape
             @connection.open_connection
             @depts = @connection.parseDepts
             @connection.close_connection
-            term.depts = @depts
             # For each department, get the courses
             @depts.each do |dept|
                 puts "Scraping department: #{dept.category.name}"
@@ -40,7 +44,6 @@ class Scrape
                 @connection.open_connection
                 @courses = @connection.parseCourses
                 @connection.close_connection
-                dept.courses = @courses
                 # For each course, get the sections
                 @courses.each do |course|
                     puts "Scraping course: #{course.category.name}"
@@ -48,7 +51,6 @@ class Scrape
                     @connection.open_connection
                     @sections = @connection.parseSections
                     @connection.close_connection 
-                    course.sections = @sections
                     # For each section, get the books
                     @@logger.append "Began parsing #{term.category.name} #{dept.category.name} #{course.category.name}"
                     @sections.each do |section|
