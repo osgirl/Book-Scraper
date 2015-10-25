@@ -89,7 +89,7 @@ class Parameters
     # Save this to filename
     def saveParameters(filename)
         open(filename, 'w') do |fout|
-            fout << "#{@termId}|#{@deptId}|#{@courseId}|#{@sectionId}|#{@dropdown}\n"
+            fout << "#{@termId}|#{@deptId}|#{@courseId}\n"
         end 
     end
     
@@ -100,7 +100,7 @@ class Parameters
             lines = fin.readline.chomp!.split('|')
         end 
         
-        return Parameters.new(lines[0], lines[1], lines[2], lines[3], lines[4])
+        return Parameters.new(lines[0], lines[1], lines[2], nil, nil)
         
     end
     

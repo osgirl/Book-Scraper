@@ -62,7 +62,8 @@ class Scrape
                 @courses.each do |course|
                     if (!@next.nil? and !@next.courseId.nil?)
                         if course.category.id.eql? @next.courseId 
-                            @next.courseId = nil
+                            @next = nil
+                            next
                         else
                             next
                         end
@@ -74,34 +75,24 @@ class Scrape
                     @connection.close_connection 
                     # For each section, get the books
                     @@logger.append "Began parsing #{term.category.name} #{dept.category.name} #{course.category.name}"
-                    @sections.each do |section|
-                        if (!@next.nil? and !@next.sectionId.nil?)
-                            if section.category.id.eql? @next.sectionId 
-                                @next = nil
-                                next
-                            else
-                                next
-                            end
-                        end
-                        puts "Scraping section: #{section.category.name}"
-                        @connection = VisualConnection.new(Parameters.new(term.category.id, dept.category.name, course.category.name, section.category.name, nil))
-                        #@connection = VisualConnection.new(Parameters.new('67388865', 'AEROENG', '3560', '6747', nil))
-                        @connection.open_connection
-                        @connection.selectCourse
-                        @connection.submitRequest
-                        scrapedBooks = @connection.scrapeBooks
-                        # for each scraped book, move it onto the csv of books
-                        scrapedBooks.each do |scrapedBook|
-                            scrapedBook.append('books.csv')
-                            puts scrapedBook.to_s
-                        end
-                        @connection.close_connection
-                        # Save the parameters to a file. Signifies it being the last file scraped
-                        Parameters.new(term.category.id, dept.category.id, course.category.id, section.category.id, nil).saveParameters(LastScrapedFile)
+                    @connection = VisualConnection.new(Parameters.new(term.category.id, dept.category.name, course.category.name, nil, nil))
+                    #@connection = VisualConnection.new(Parameters.new('67388865', 'AEROENG', '3560', nil, nil))
+                    @connection.open_connection
+                    @connection.enterCourseInformation(@sections)
+                    @connection.submitRequest
+                    scrapedBooks = @connection.scrapeBooks
+                    # for each scraped book, move it onto the csv of books
+                    scrapedBooks.each do |scrapedBook|
+                        scrapedBook.append('books.csv')
+                        puts scrapedBook.to_s
                     end
+                    @connection.close_connection
+                    # Save the parameters to a file. Signifies it being the last file scraped
+                    Parameters.new(term.category.id, dept.category.id, course.category.id, nil, nil).saveParameters(LastScrapedFile)
+                    sleep(5)
                     @@logger.append "Finished parsing #{term.category.name} #{dept.category.name} #{course.category.name}"
-                end
-            end
-        end
-	end
-end
+                end # end the course scrape
+            end # end dept scrape
+        end # end term scrape
+    end # end scrape method
+end # end scrape class

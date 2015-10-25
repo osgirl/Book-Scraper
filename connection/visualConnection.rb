@@ -35,7 +35,7 @@ class VisualConnection < Connection
     
     # Fill out the form and press submit button
     # term instance_of? Term, dept instance_of? Dept, course instance_of? Course, section instance_of? Section
-    def selectCourse
+    def enterCourseInformation(sections)
  
         if @page.nil?
             @@logger.append "Unable to parse nil session. Scraping will terminate unless rescued."
@@ -56,36 +56,55 @@ class VisualConnection < Connection
         # 3 parallel arrays simplify the amount of repeated code.
         headerElements = ['.termHeader', '.deptSelectInput', '.courseSelectInput', '.sectionSelectInput']
         childElements = ['.termHeader li', '.deptColumn li', '.courseColumn li', '.sectionColumn li']
-        paramValues = [parameters.termId, parameters.deptId, parameters.courseId, parameters.sectionId]
+        paramValues = [parameters.termId, parameters.deptId, parameters.courseId]
         
-        # Click on the header element
-        4.times do |currElement|
-            rows[0].find(headerElements[currElement]).click 
-            foundElement = false
-            if currElement === 0 # Term requires special handling
-                @session.all('.bookRowContainer')[0].all(childElements[currElement]).each do |element|
-                    if element['data-optionvalue'].eql? paramValues[currElement]
-                        element.click
-                        foundElement = true
-                        break
+        # Grab a reference to the 'additional rows' button
+        addRow = @session.find('.addMoreRows')
+        
+        # Scrape all sections together, since we are splitting the books based on dept and course, not section
+        rowNum = 0
+        sections.each do |currSection|
+            # Click on the header element
+            4.times do |currElement|
+                rows[rowNum].find(headerElements[currElement]).click 
+                foundElement = false
+                if currElement === 0 # Term requires special handling
+                    rows[rowNum].all(childElements[currElement]).each do |element|
+                        if element['data-optionvalue'].eql? paramValues[currElement]
+                            element.click
+                            foundElement = true
+                            break
+                        end
+                    end
+                elsif currElement === 3 # section requires special handling
+                    rows[rowNum].all(childElements[currElement]).each do |element|
+                        if element.text.eql? currSection.category.name
+                            element.click
+                            foundElement = true
+                            break
+                        end 
+                    end
+                else # Select dept or course depending on the current element value
+                    rows[rowNum].all(childElements[currElement]).each do |element|
+                        if element.text.eql? paramValues[currElement]
+                            element.click
+                            foundElement = true
+                            break
+                        end 
                     end
                 end
-            else # Select dept, course or section depending on the current element value
-                @session.all('.bookRowContainer')[0].all(childElements[currElement]).each do |element|
-                    if element.text.eql? paramValues[currElement]
-                        element.click
-                        foundElement = true
-                        break
-                    end 
+                if !foundElement
+                    @@logger.append "Unable to find element #{paramValues[currElement]} on page."
+                    raise "Unable to find element #{paramValues[currElement]} on page." 
                 end
-            end
-            if !foundElement
-                @@logger.append "Unable to find element #{paramValues[currElement]} on page."
-                raise "Unable to find element #{paramValues[currElement]} on page." 
-            end
-        end
-        
-    end
+            end # end elements loop
+            rowNum = rowNum + 1
+            addRow.click # add another row
+            rows = @session.all('.bookRowContainer') # update rows after adding a new one
+    
+        end # end section loop
+
+    end # end selectSections
 
     # Submit the page 
     def submitRequest
