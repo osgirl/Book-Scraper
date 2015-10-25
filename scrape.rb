@@ -77,22 +77,39 @@ class Scrape
                     @@logger.append "Began parsing #{term.category.name} #{dept.category.name} #{course.category.name}"
                     @connection = VisualConnection.new(Parameters.new(term.category.id, dept.category.name, course.category.name, nil, nil))
                     #@connection = VisualConnection.new(Parameters.new('67388865', 'AEROENG', '3560', nil, nil))
-                    2.times do 
+                    2.times do |currTry|
                         begin
                             @connection.open_connection
                             @connection.enterCourseInformation(@sections)
                             @connection.submitRequest
                             break
                         rescue # If the connection fails to load the page properly, try again after 5 seconds
-                            @@logger.append "Connection failed to initialize page fully. Retrying in 5 seconds."
-                            sleep(5)
+                            if currTry < 1
+                                @@logger.append "Connection failed to initialize page fully. Retrying in 5 seconds."
+                                sleep(5)
+                            else
+                                @@logger.append "Connection failed to initialize page fully. Terminating."
+                                raise "Unable to establish connection."
+                            end
                         end
                     end
                     scrapedBooks = @connection.scrapeBooks
-                    # for each scraped book, move it onto the csv of books
+                    
+                    # Only append unique books per course to the csv file
+                    uniqueBooks = Array.new
                     scrapedBooks.each do |scrapedBook|
-                        scrapedBook.append('books.csv')
-                        puts scrapedBook.to_s
+                        unique = true
+                        uniqueBooks.each do |uniqueBook|
+                            if scrapedBook.to_s.eql? uniqueBook.to_s
+                                unique = false
+                                break
+                            end
+                        end
+                        if unique
+                            uniqueBooks << scrapedBook 
+                            scrapedBook.append('books.csv', '|')
+                            puts scrapedBook.to_s
+                        end
                     end
                     @connection.close_connection
                     # Save the parameters to a file. Signifies it being the last file scraped
