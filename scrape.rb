@@ -7,6 +7,9 @@ require_relative 'connection/backendConnection'
 require_relative 'connection/parameters'
 require_relative 'scrapeLogger'
 
+require 'optparse'
+require 'fileutils'
+
 # Scrape class :    Scrape books from the B&N site utilitizing the provided connection classes
 # @date created:	10/12/15
 class Scrape
@@ -121,3 +124,58 @@ class Scrape
         end # end term scrape
     end # end scrape method
 end # end scrape class
+
+# Confirm that the user wants to start the scraping process from the start
+def confirm
+    puts "Are you sure you wish to reset the scraping process? (Y|N)"
+
+    input = nil
+    while(true)
+        input = gets.chomp 
+        if input.nil?
+            puts "Invalid option."
+        else
+            if input.eql? "Y" or input.eql? "y"
+                return true
+            elsif input.eql? "N" or input.eql? "n"
+                return false
+            end
+        end
+    end
+end
+
+# Parse the command line options 
+options = {}
+OptionParser.new do |opts|
+    opts.banner = "Usage: scrape.rb [options]"
+
+    opts.on('-r', '--reset') { |v| options[:reset] = 1 }
+    opts.on('-f', '--force') { |v| options[:force] = 1 }
+
+end.parse!
+
+# check if the user has initiated a reset
+if !options[:reset].nil?
+    if !options[:force].nil? or confirm
+        puts "Deleting scraped books and bookmark."
+        FileUtils.rm('last.dat', :force => true)
+        FileUtils.rm('books.csv', :force => true)
+    end
+end
+
+# Begin scraping
+logger = ScrapeLogger.new
+begin
+    scraper = Scrape.new
+    puts "Scraping Started."
+    logger.append "Scraping Started."
+    scraper.scrape
+    puts "Scraping Complete."
+    logger.append "Scraping Complete."
+rescue SystemExit, Interrupt # Catch ctrl + c and exit gracefully
+    puts "Program interrupt received."
+    logger.append "Program interrupt received"
+rescue SocketError
+    puts "Connection error at #{Time.new.strftime("%H:%M:%S")}"
+    logger.append "Connection error"
+end

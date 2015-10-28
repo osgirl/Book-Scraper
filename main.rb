@@ -20,18 +20,7 @@ class Main
             @books = Hash.new()
             input = displayMenu
             if input == 1 
-                begin
-                    Scrape.new.scrape
-                    puts "Scraping Complete."
-                    @@logger.append "Scraping Complete."
-                rescue SystemExit, Interrupt # Catch ctrl + c and exit gracefully
-                    puts "Program interrupt received."
-                    @@logger.append "Program interrupt received"
-                    break
-                rescue SocketError
-                    puts "Connection error at #{Time.new.strftime("%H:%M:%S")}"
-                    @@logger.append "Connection error"
-                end
+                
             elsif input == 2 # Output instructions
                 puts "Option 1 will scrape all books from the B&N website associated with the OSU department courses."
             elsif input == 3 #force update
@@ -41,7 +30,7 @@ class Main
     end
     
     def initialize
-        @connection = nil
+        # Nothing to do here
     end
 
     def displayMenu
@@ -54,7 +43,9 @@ class Main
         input = nil
         while(true)
             puts "Choice: "
-            input = gets.chomp #Get user input
+            input = gets.chomp 
+
+puts options#Get user input
             #attempt to convert input to an integer
             #make sure integer is between 1 and 3
             input = Integer(input) rescue nil
