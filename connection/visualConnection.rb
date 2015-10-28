@@ -158,8 +158,7 @@ class VisualConnection < Connection
                 @page.all('.cm_tb_image a img').each do |image|
                     book.image = image['src'] if image['title'].eql? book.title 
                 end
-                
-                books << book
+                books << book if !book.edition.eql? 'N/A' # Filter out non-book items such as binders, folders, etc.
             end
         end
         
