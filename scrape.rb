@@ -110,7 +110,7 @@ class Scrape
                         end
                         if unique
                             uniqueBooks << scrapedBook 
-                            scrapedBook.append('books.csv', '|')
+                            scrapedBook.append("#{term.category.id}.#{dept.category.name}.csv", '|')
                             puts scrapedBook.to_s
                         end
                     end

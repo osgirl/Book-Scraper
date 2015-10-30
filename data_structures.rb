@@ -37,6 +37,11 @@ class Book
 
     # Append record to a provided file
     def append(filename, delimiter)
+        if !File.file? filename
+             open(filename, 'w') do |fout|
+                fout << "ISBN#{delimiter}TITLE#{delimiter}AUTHOR#{delimiter}PUBLISHER#{delimiter}EDITION#{delimiter}DEPARTMENT#{delimiter}COURSE_NUMBER#{delimiter}IMAGE_URL\n"
+            end
+        end
         open(filename, 'a') do |fout|
             fout << "#{@isbn}#{delimiter}#{@title}#{delimiter}#{@author}#{delimiter}#{@publisher}#{delimiter}#{@edition}#{delimiter}#{@course.department}#{delimiter}#{@course.number}#{delimiter}#{@image}\n"
         end 
