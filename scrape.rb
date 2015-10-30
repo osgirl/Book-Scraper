@@ -159,7 +159,9 @@ if !options[:reset].nil?
     if !options[:force].nil? or confirm
         puts "Deleting scraped books and bookmark."
         FileUtils.rm('last.dat', :force => true)
-        FileUtils.rm('books.csv', :force => true)
+        Dir.glob('*.csv').each do |f|
+            FileUtils.rm(f, :force => true)
+        end
     end
 end
 
