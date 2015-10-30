@@ -120,6 +120,10 @@ class Scrape
                     sleep(2) # try to avoid spamming the hell out of B&N site
                     @@logger.append "Finished parsing #{term.category.name} #{dept.category.name} #{course.category.name}"
                 end # end the course scrape
+                
+                # Spawn a thread and launch a SQL Server job
+                
+                
             end # end dept scrape
         end # end term scrape
     end # end scrape method
