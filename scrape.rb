@@ -110,7 +110,7 @@ class Scrape
                         end
                         if unique
                             uniqueBooks << scrapedBook 
-                            scrapedBook.append("#{term.category.id}.#{dept.category.name}.csv", '|')
+                            scrapedBook.append("#{term.category.id}.#{dept.category.name}.csv.lock", '|')
                             puts scrapedBook.to_s
                         end
                     end
@@ -121,8 +121,8 @@ class Scrape
                     @@logger.append "Finished parsing #{term.category.name} #{dept.category.name} #{course.category.name}"
                 end # end the course scrape
                 
-                # Spawn a thread and launch a SQL Server job
-                
+                # Unlock the file for the finished department
+                FileUtils.mv("#{term.category.id}.#{dept.category.name}.csv.lock","#{term.category.id}.#{dept.category.name}.csv", :force => true)
                 
             end # end dept scrape
         end # end term scrape
@@ -164,6 +164,9 @@ if !options[:reset].nil?
         puts "Deleting scraped books and bookmark."
         FileUtils.rm('last.dat', :force => true)
         Dir.glob('*.csv').each do |f|
+            FileUtils.rm(f, :force => true)
+        end
+        Dir.glob('*.csv.lock').each do |f|
             FileUtils.rm(f, :force => true)
         end
     end
