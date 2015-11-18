@@ -1,8 +1,9 @@
 # Ignore the log files
 *.log
 
-# Ignore the csv files
+# Ignore the csv files and lock files
 *.csv
+*.lock
 
 # Ignore the data files
 *.dat
