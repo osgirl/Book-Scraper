@@ -113,11 +113,19 @@ class VisualConnection < Connection
     
     # Scrape books from the B&N form submission page
     def scrapeBooks
-        
+       
+		# Fix stale element exception issue where the book info is incorrectly referenced
+		allBooks = nil
+		begin
+			allBooks = @page.all('.cm_tb_bookInfo')
+		rescue
+			sleep 1
+			retry
+		end
+
         # Array of book entities
         books = Array.new
-        
-        @page.all('.cm_tb_bookInfo').each do |bookInfo|
+        allBooks.each do |bookInfo|
             if !bookInfo.find_by_id('skipNavigationToThisElement').text.eql? 'COURSE MATERIALS SELECTION PENDING'
                 book = Book.new
                 
