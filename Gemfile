@@ -2,6 +2,7 @@
 # the following line to use "http://" instead
 source 'https://rubygems.org'
 
+gem "nokogiri", ">= 1.6.7.rc"
 gem "mechanize"
 gem 'capybara'
 gem 'selenium-webdriver'
