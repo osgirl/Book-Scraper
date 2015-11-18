@@ -122,7 +122,7 @@ class Scrape
                 end # end the course scrape
                 
                 # Unlock the file for the finished department
-                FileUtils.mv("#{term.category.id}.#{dept.category.name}.csv.lock","#{term.category.id}.#{dept.category.name}.csv", :force => true)
+                FileUtils.mv("data/#{term.category.id}.#{dept.category.name}.csv.lock","data/#{term.category.id}.#{dept.category.name}.csv", :force => true)
                 
             end # end dept scrape
         end # end term scrape
