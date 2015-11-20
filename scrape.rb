@@ -88,7 +88,7 @@ class Scrape
                     @@logger.append "Began parsing #{term.category.name} #{dept.category.name} #{course.category.name}"
                     @connection = VisualConnection.new(Parameters.new(term.category.id, dept.category.name, course.category.name, nil, nil))
                     #@connection = VisualConnection.new(Parameters.new('67388865', 'AEROENG', '3560', nil, nil))
-                    @sections.each_slice(20) do |sectionSlice| # only allow 20 sections to be entered during a single connection
+                    @sections.each_slice(10) do |sectionSlice| # only allow 20 sections to be entered during a single connection
                         2.times do |currTry|
                             begin
                                 @connection.open_connection
@@ -130,7 +130,7 @@ class Scrape
                         else # only partially done with course
                             Parameters.new(term.category.id, dept.category.id, course.category.id, sectionSlice.last.category.id, nil).saveParameters(LastScrapedFile, true)
                         end
-                        @@logger.append "Finished parsing first #{sectionSlice.size} sections of #{term.category.name} #{dept.category.name} #{course.category.name}"
+                        @@logger.append "Finished parsing #{sectionSlice.size} sections of #{term.category.name} #{dept.category.name} #{course.category.name}"
                         sleep(2) # try to avoid spamming the hell out of B&N site
                     end
                     @@logger.append "Finished parsing #{term.category.name} #{dept.category.name} #{course.category.name}"
