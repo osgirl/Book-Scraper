@@ -80,44 +80,50 @@ class Scrape
                     @@logger.append "Began parsing #{term.category.name} #{dept.category.name} #{course.category.name}"
                     @connection = VisualConnection.new(Parameters.new(term.category.id, dept.category.name, course.category.name, nil, nil))
                     #@connection = VisualConnection.new(Parameters.new('67388865', 'AEROENG', '3560', nil, nil))
-                    2.times do |currTry|
-                        begin
-                            @connection.open_connection
-                            @connection.enterCourseInformation(@sections)
-                            @connection.submitRequest
-                            break
-                        rescue # If the connection fails to load the page properly, try again after 5 seconds
-                            if currTry < 1
-                                @@logger.append "Connection failed to initialize page fully. Retrying in 5 seconds."
-                                sleep(5)
-                            else
-                                @@logger.append "Connection failed to initialize page fully. Terminating."
-                                raise "Unable to establish connection."
-                            end
-                        end
-                    end
-                    scrapedBooks = @connection.scrapeBooks
-                    
-                    # Only append unique books per course to the csv file
-                    uniqueBooks = Array.new
-                    scrapedBooks.each do |scrapedBook|
-                        unique = true
-                        uniqueBooks.each do |uniqueBook|
-                            if scrapedBook.to_s.eql? uniqueBook.to_s
-                                unique = false
+                    @sections.each_slice(20) do |sectionSlice| # only allow 20 sections to be entered during a single connection
+                        2.times do |currTry|
+                            begin
+                                @connection.open_connection
+                                @connection.enterCourseInformation(sectionSlice)
+                                @connection.submitRequest
                                 break
+                            rescue # If the connection fails to load the page properly, try again after 5 seconds
+                                if currTry < 1
+                                    @@logger.append "Connection failed to initialize page fully. Retrying in 5 seconds."
+                                    sleep(5)
+                                else
+                                    @@logger.append "Connection failed to initialize page fully. Terminating."
+                                    raise "Unable to establish connection."
+                                end
                             end
                         end
-                        if unique
-                            uniqueBooks << scrapedBook 
-                            scrapedBook.append("data/#{term.category.id}.#{dept.category.name}.csv.lock", '|')
-                            puts scrapedBook.to_s
+                        scrapedBooks = @connection.scrapeBooks
+
+                        # Only append unique books per course to the csv file
+                        uniqueBooks = Array.new
+                        scrapedBooks.each do |scrapedBook|
+                            unique = true
+                            uniqueBooks.each do |uniqueBook|
+                                if scrapedBook.to_s.eql? uniqueBook.to_s
+                                    unique = false
+                                    break
+                                end
+                            end
+                            if unique
+                                uniqueBooks << scrapedBook 
+                                scrapedBook.append("data/#{term.category.id}.#{dept.category.name}.csv.lock", '|')
+                                puts scrapedBook.to_s
+                            end
                         end
+                        @connection.close_connection
+                        # Save the parameters to a file. Signifies it being the last file scraped
+                        if @sections.last.category.id.eql? sectionSlice.last.category.id # finished entire course
+                            Parameters.new(term.category.id, dept.category.id, course.category.id, nil, nil).saveParameters(LastScrapedFile, false)
+                        else # only partially done with course
+                            Parameters.new(term.category.id, dept.category.id, course.category.id, sectionSlice.last.category.id, nil).saveParameters(LastScrapedFile, true)
+                        end
+                        sleep(2) # try to avoid spamming the hell out of B&N site
                     end
-                    @connection.close_connection
-                    # Save the parameters to a file. Signifies it being the last file scraped
-                    Parameters.new(term.category.id, dept.category.id, course.category.id, nil, nil).saveParameters(LastScrapedFile, false)
-                    sleep(2) # try to avoid spamming the hell out of B&N site
                     @@logger.append "Finished parsing #{term.category.name} #{dept.category.name} #{course.category.name}"
                 end # end the course scrape
                 
