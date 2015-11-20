@@ -65,8 +65,8 @@ class Scrape
                 @courses.each do |course|
                     if (!@next.nil? and !@next.courseId.nil?)
                         if course.category.id.eql? @next.courseId 
-                            @next = nil
-                            next
+                            @next.courseId = nil
+                            next if @next.sectionId.nil?
                         else
                             next
                         end
@@ -76,6 +76,14 @@ class Scrape
                     @connection.open_connection
                     @sections = @connection.parseSections
                     @connection.close_connection 
+                    
+                    # if the sections parameter exists, filter out all sections before reaching this flag
+                    if (!@next.nil? and !@next.sectionId.nil?)
+                        while !@sections.shift.category.id.eql? @next.sectionId 
+                        end
+                    end
+                    @next = nil
+                    
                     # For each section, get the books
                     @@logger.append "Began parsing #{term.category.name} #{dept.category.name} #{course.category.name}"
                     @connection = VisualConnection.new(Parameters.new(term.category.id, dept.category.name, course.category.name, nil, nil))
@@ -122,6 +130,7 @@ class Scrape
                         else # only partially done with course
                             Parameters.new(term.category.id, dept.category.id, course.category.id, sectionSlice.last.category.id, nil).saveParameters(LastScrapedFile, true)
                         end
+                        @@logger.append "Finished parsing first #{sectionSlice.size} sections of #{term.category.name} #{dept.category.name} #{course.category.name}"
                         sleep(2) # try to avoid spamming the hell out of B&N site
                     end
                     @@logger.append "Finished parsing #{term.category.name} #{dept.category.name} #{course.category.name}"
