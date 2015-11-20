@@ -76,10 +76,11 @@ class Scrape
                     @connection.open_connection
                     @sections = @connection.parseSections
                     @connection.close_connection 
-                    
+                    sectionCount = 0 # limit the number of scraped sections to 100
                     # if the sections parameter exists, filter out all sections before reaching this flag
                     if (!@next.nil? and !@next.sectionId.nil?)
                         while !@sections.shift.category.id.eql? @next.sectionId 
+                            sectionCount = sectionCount + 1
                         end
                     end
                     @next = nil
@@ -89,6 +90,10 @@ class Scrape
                     @connection = VisualConnection.new(Parameters.new(term.category.id, dept.category.name, course.category.name, nil, nil))
                     #@connection = VisualConnection.new(Parameters.new('67388865', 'AEROENG', '3560', nil, nil))
                     @sections.each_slice(10) do |sectionSlice| # only allow 20 sections to be entered during a single connection
+                        if sectionCount >= 100 # we do not want to scrape more than 100 sections per course. This takes a very long time and is not useful
+                            Parameters.new(term.category.id, dept.category.id, course.category.id, nil, nil).saveParameters(LastScrapedFile, false)
+                            break
+                        end
                         2.times do |currTry|
                             begin
                                 @connection.open_connection
@@ -130,7 +135,8 @@ class Scrape
                         else # only partially done with course
                             Parameters.new(term.category.id, dept.category.id, course.category.id, sectionSlice.last.category.id, nil).saveParameters(LastScrapedFile, true)
                         end
-                        @@logger.append "Finished parsing #{sectionSlice.size} sections of #{term.category.name} #{dept.category.name} #{course.category.name}"
+                        sectionCount = sectionCount + sectionSlice.size
+                        @@logger.append "Finished parsing #{sectionCount} sections of #{term.category.name} #{dept.category.name} #{course.category.name}"
                         sleep(2) # try to avoid spamming the hell out of B&N site
                     end
                     @@logger.append "Finished parsing #{term.category.name} #{dept.category.name} #{course.category.name}"
