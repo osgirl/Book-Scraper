@@ -116,7 +116,7 @@ class Scrape
                     end
                     @connection.close_connection
                     # Save the parameters to a file. Signifies it being the last file scraped
-                    Parameters.new(term.category.id, dept.category.id, course.category.id, nil, nil).saveParameters(LastScrapedFile)
+                    Parameters.new(term.category.id, dept.category.id, course.category.id, nil, nil).saveParameters(LastScrapedFile, false)
                     sleep(2) # try to avoid spamming the hell out of B&N site
                     @@logger.append "Finished parsing #{term.category.name} #{dept.category.name} #{course.category.name}"
                 end # end the course scrape

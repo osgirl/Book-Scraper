@@ -87,9 +87,13 @@ class Parameters
     end
     
     # Save this to filename
-    def saveParameters(filename)
+    def saveParameters(filename, sectionFlag)
         open(filename, 'w') do |fout|
-            fout << "#{@termId}|#{@deptId}|#{@courseId}\n"
+            fout << "#{@termId}|#{@deptId}|#{@courseId}"
+            if sectionFlag == true
+                fout << "|#{@sectionId}"
+            end
+            fout << "\n"
         end 
     end
     
@@ -100,8 +104,11 @@ class Parameters
             lines = fin.readline.chomp!.split('|')
         end 
         
-        return Parameters.new(lines[0], lines[1], lines[2], nil, nil)
-        
+        if lines.size > 3 # section parameter has been supplied
+            return Parameters.new(lines[0], lines[1], lines[2], lines[3], nil)
+        else
+            return Parameters.new(lines[0], lines[1], lines[2], nil, nil)
+        end
     end
     
 end
