@@ -71,6 +71,7 @@ class Scrape
                             next
                         end
                     end
+					next if course.category.name.to_i >= 8999 # skip the dissertation courses since they will not have a book
                     puts "Scraping course: #{course.category.name}"
                     @connection = BackendConnection.new(Parameters.new(term.category.id, dept.category.id, course.category.id, nil, Parameters::COURSE))
                     @connection.open_connection
