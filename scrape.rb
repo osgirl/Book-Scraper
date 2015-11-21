@@ -65,13 +65,20 @@ class Scrape
                 @courses.each do |course|
                     if (!@next.nil? and !@next.courseId.nil?)
                         if course.category.id.eql? @next.courseId 
-                            @next.courseId = nil
-                            next if @next.sectionId.nil?
+							if @next.sectionId.nil?
+								@next = nil
+								next
+							else
+								@next.courseId = nil
+							end
                         else
                             next
                         end
                     end
-					next if course.category.name.to_i >= 8999 # skip the dissertation courses since they will not have a book
+					if course.category.name.to_i >= 8999 # skip the dissertation courses since they will not have a book
+						@next = nil
+						next
+					end
                     puts "Scraping course: #{course.category.name}"
                     @connection = BackendConnection.new(Parameters.new(term.category.id, dept.category.id, course.category.id, nil, Parameters::COURSE))
                     @connection.open_connection
