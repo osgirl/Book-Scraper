@@ -154,9 +154,11 @@ class Scrape
                 FileUtils.mv("data/#{term.category.id}.#{dept.category.name}.csv.lock","data/#{term.category.id}.#{dept.category.name}.csv", :force => true)
 				sleep(1)
 				# If upload option is set, upload to sql server
-				if !options[:upload].nil?
+              if !options[:upload].nil?
 					begin
-						exec 'powershell.exe .\upload.ps1'
+                        @@logger.append "Uploading #{dept.category.name} books to Windows Server."  
+                        success = system("powershell.exe .\\upload.ps1")
+                        puts success
 					rescue
 						@@logger.append "Can only use upload option on Windows Server"
 						puts "Can only use upload option on Windows Server"
@@ -210,10 +212,6 @@ if !options[:reset].nil?
             FileUtils.rm(f, :force => true)
         end
     end
-end
-
-if !options[:upload].nil?
-	puts "Worked!"
 end
 
 # Begin scraping
