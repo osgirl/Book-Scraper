@@ -152,7 +152,16 @@ class Scrape
                 
                 # Unlock the file for the finished department
                 FileUtils.mv("data/#{term.category.id}.#{dept.category.name}.csv.lock","data/#{term.category.id}.#{dept.category.name}.csv", :force => true)
-                
+				sleep(1)
+				# If upload option is set, upload to sql server
+				if !options[:upload].nil?
+					begin
+						exec 'powershell.exe .\upload.ps1'
+					rescue
+						@@logger.append "Can only use upload option on Windows Server"
+						puts "Can only use upload option on Windows Server"
+					end
+				end
             end # end dept scrape
         end # end term scrape
     end # end scrape method
@@ -184,6 +193,8 @@ OptionParser.new do |opts|
 
     opts.on('-r', '--reset') { |v| options[:reset] = 1 }
     opts.on('-f', '--force') { |v| options[:force] = 1 }
+	opts.on('-u', '--upload') { |v| options[:upload] = 1 }
+	opts.on('-p', '--persistent') { |v| options[:persistent] = 1 }
 
 end.parse!
 
@@ -201,19 +212,28 @@ if !options[:reset].nil?
     end
 end
 
+if !options[:upload].nil?
+	puts "Worked!"
+end
+
 # Begin scraping
 logger = ScrapeLogger.new
 begin
-    scraper = Scrape.new
-    puts "Scraping Started."
-    logger.append "Scraping Started."
-    scraper.scrape
-    puts "Scraping Complete."
-    logger.append "Scraping Complete."
+	scraper = Scrape.new
+	puts "Scraping Started."
+	logger.append "Scraping Started."
+	scraper.scrape
+	puts "Scraping Complete."
+	logger.append "Scraping Complete."
 rescue SystemExit, Interrupt # Catch ctrl + c and exit gracefully
-    puts "Program interrupt received."
-    logger.append "Program interrupt received"
-rescue SocketError
-    puts "Connection error at #{Time.new.strftime("%H:%M:%S")}"
-    logger.append "Connection error"
+	puts "Program interrupt received."
+	logger.append "Program interrupt received"
+	abort
+rescue
+	# wait a little while before attempting again
+	if !options[:persistent].nil? # Retry if persistent option is supplied
+		logger.append('Persistent Scrape failed.')
+		sleep 20
+		retry 
+	end
 end
