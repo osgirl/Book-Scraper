@@ -8,3 +8,6 @@
 # Ignore the data files
 *.dat
 
+# Ignore the .ds_store tempfiles
+*.DS_Store
+
