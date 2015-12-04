@@ -32,7 +32,7 @@ $bulkcopy.batchsize = $batchsize
 # For every csv file, upload it to the scrape temp table
 Get-ChildItem data\*.csv | Foreach-Object {
 	$csvfile = $_.FullName
-	Write-Host "Uploading $_.name records to $database"
+	Write-Host "Uploading $csvfile records to $database"
   
 	# Create the datatable, and autogenerate the columns. 
 	$datatable = New-Object System.Data.DataTable 
@@ -72,6 +72,9 @@ Get-ChildItem data\*.csv | Foreach-Object {
 	
 	# Delete the csv file after it has been uploaded
 	#RemoveItem $csvfile
+	# Temporarily rename the file to *.bak to keep a record. Change this to RemoveItem code 
+	Move-Item $csvfile "$csvfile.bak"
+	
 }
 $bulkcopy.Close(); $bulkcopy.Dispose() 
   
