@@ -23,7 +23,7 @@ $batchsize = 50000
   
 # Build the sqlbulkcopy connection, and set the timeout to infinite 
 $connectionstring = "Data Source=$sqlserver;Integrated Security=true;Initial Catalog=$database;" 
-$bulkcopy = New-Object Data.SqlClient.SqlBulkCopy($connectionstring, [System.Data.SqlClient.SqlBulkCopyOptions]::TableLock) 
+$bulkcopy = New-Object Data.SqlClient.SqlBulkCopy($connectionstring, [System.Data.SqlClient.SqlBulkCopyOptions]::FireTriggers) 
 $bulkcopy.DestinationTableName = $table 
 $bulkcopy.bulkcopyTimeout = 0 
 $bulkcopy.batchsize = $batchsize
