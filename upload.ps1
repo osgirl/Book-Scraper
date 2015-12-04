@@ -14,7 +14,6 @@ $csvdelimiter = "|"
 $FirstRowColumnNames = $true 
   
 ################### No need to modify anything below ################### 
-Write-Host "Script started..." 
 $elapsed = [System.Diagnostics.Stopwatch]::StartNew()  
 [void][Reflection.Assembly]::LoadWithPartialName("System.Data") 
 [void][Reflection.Assembly]::LoadWithPartialName("System.Data.SqlClient") 
