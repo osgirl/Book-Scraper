@@ -19,9 +19,10 @@ When executing the program, this is the file you will be executing. The process 
 	* Important note: If there are more than 10 sections for a course, it will scrape 10 sections at a time. Also, it is limited to 100 sections per course.
 5. If the --upload argument is provided, after scraping an entire department, the .csv file generated for that department is uploaded to the database designated in the upload.ps1 PowerShell script. 
 6. Repeate process 3-5 until all courses have been scraped or an error/interrupt occurs.
-7. ON CONNECTION LOSS: The scraper will wait 5 seconds and retry the connection. If it fails again, it will throw an error.
-8. ON ERROR: If the --persistent argument is provided, the program will reload the scraper starting at step 2. Otherwise, the program will terminate.
-9. ON INTERRUPT: Usually caused by 'ctrl + c'. The scraper will terminate and can be resumed at a later time.
+
+* ON CONNECTION LOSS: The scraper will wait 5 seconds and retry the connection. If it fails again, it will throw an error.
+* ON ERROR: If the --persistent argument is provided, the program will reload the scraper starting at step 2. Otherwise, the program will terminate.
+* ON INTERRUPT: Usually caused by 'ctrl + c'. The scraper will terminate and can be resumed at a later time.
 
 ## Generated Files
 
