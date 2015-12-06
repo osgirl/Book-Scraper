@@ -23,7 +23,6 @@ Once cloned, the next step is to install the bundled software. Run the following
 ```bash
 bundle install
 ```
-<br>
 All the setup is now complete! You can move onto running the scraper.
 
 ## Running the Scraper
@@ -31,11 +30,11 @@ To run the scraper, it is very easy. Just run the following command in the termi
 ```bash
 ruby scrape.rb
 ```
-<br>
 See below, in Code Structure > Controller, for more information on the command line arguments available for the scraping process.
 
 ## Code structure
 The code is split into 4 logical sections: the controller, connection, data structures, and logger. The code for the controller, data structures, and logger are located in the root folder and is stored inside the 'scrape.rb', 'data_strucutres.rb', and 'scrapeLogger.rb' files respectively. The connection code is stored in the 'connection' folder.
+
 ### Controller
 When executing the program, this is the file you will be executing. The process is as follows:
 
@@ -51,7 +50,7 @@ When executing the program, this is the file you will be executing. The process 
 4. Create a visual connection with the OSU B&N site and select the sections of a specific course. Submit the form and scrape the books into a .csv file.
 	* Important note: If there are more than 10 sections for a course, it will scrape 10 sections at a time. Also, it is limited to 100 sections per course.
 5. If the --upload argument is provided, after scraping an entire department, the .csv file generated for that department is uploaded to the database designated in the upload.ps1 PowerShell script. 
-6. Repeate process 3-5 until all courses have been scraped or an error/interrupt occurs.
+6. Repeat process 3-5 until all courses have been scraped or an error/interrupt occurs.
 
 * ON CONNECTION LOSS: The scraper will wait 5 seconds and retry the connection. If it fails again, it will throw an error.
 * ON ERROR: If the --persistent argument is provided, the program will reload the scraper starting at step 2. Otherwise, the program will terminate.
@@ -60,17 +59,18 @@ When executing the program, this is the file you will be executing. The process 
 ### Connection
 
 ### Data Structures
+Internal data structures to store frequently used data. The only notable structure used is the 'Book' class. If more information is needed (or less is wanted) this is the class to modify. It stores the ISBN, title, author, publisher, edition, and image of the book as well as what course the book is associated with. It also contains methods to output the book to the .csv file with variable delimiter provided by the caller.
 
 ### Logger
+Very simplistic form of logging. This is where the log file name 'scraper.log' is defined and can be changed if necessary. Essentially, text is passed into the 'append' function and it is appended to the end of the logfile. 
 
 ## Generated Files
-During the scraping process, several files are generated and renamed in peculiar ways. This section is here to explain the intricasies of this process. 
-
-
-
-
-## Use cases
+During the scraping process, several files are generated and renamed in peculiar ways. This section is here to explain the intricacies of this process. 
+<br>
+When the scraper is first started, the 'last.dat' file (which tracks the most recent scraped course and section) is created as well as the 'scraper.log' file which timestamps specific actions. 
+<br>
+When a department is in progress of being scraped, a 'semester_id'.'deparment_name'.csv.lock file is created to store any books scraped. Once the department has been fully scraped, this file is renamed to 'semester_id'.'deparment_name'.csv. These files are stored in the 'data' directory and are removed using the '--reset' command line argument.
 
 ## Final Notes
 * As it sits, this scraping process can take up to 2 weeks to complete depending on processing speed, internet speed, internet connection stability, and other miscellaneous factors. 
-* The uploading process only works for windows sql server using a PowerShell script. This can be modified to work with Unix/OSX by changing the PowerShell script into a bash script and modifying the system call in the scrape.rb file. But for our use cases, we needed a powershell script for windows server 2012.
+* The uploading process only works for windows sql server using a PowerShell script. This can be modified to work with Unix/OSX by changing the PowerShell script into a bash script and modifying the system call in the scrape.rb file. But for our use cases, we needed a PowerShell script for windows server 2012.
