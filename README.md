@@ -5,25 +5,32 @@ A web scraper which scrapes the Ohio State University Barnes and Noble textbook 
 To run the book scraper, you will need three pieces of software installed on your machine:
 
 * [Ruby](https://www.ruby-lang.org/en/downloads/)
-** Scraper is written in ruby... So yea. You need it.
+	* Scraper is written in ruby... So yea. You need it.
 * Git
-** For cloning and version control
+	* For cloning and version control
 * [Mozilla Firefox](https://www.mozilla.org/en-US/firefox/new/?product=firefox-3.6.8)
-** The scraper will be opening Firefox windows to do the visual scraping. Information on this is provided below.
+	* The scraper will be opening Firefox windows to do the visual scraping. Information on this is provided below.
 
 ## Cloning and Setup
 The first step to running the Book-Scraper after installing the prerequisite software is to clone the directory onto your local machine (or server). If you are unfamiliar with this process, it is very straightforward. Open up a terminal prompt of some sort ([git-cmd](https://git-scm.com/download/win) for windows is preferred for full functionality). Run the following:
->git clone https://github.com/N8Stewart/Book-Scraper <location>
+
+```bash
+git clone https://github.com/N8Stewart/Book-Scraper <location>
+```
 where location is the the folder where you want the files to be cloned. If left blank, it will default to a folder called 'Book-Scraper'.
 <br>
 Once cloned, the next step is to install the bundled software. Run the following:
->bundle install
+```bash
+bundle install
+```
 <br>
 All the setup is now complete! You can move onto running the scraper.
 
 ## Running the Scraper
 To run the scraper, it is very easy. Just run the following command in the terminal:
->ruby scrape.rb
+```bash
+ruby scrape.rb
+```
 <br>
 See below, in Code Structure > Controller, for more information on the command line arguments available for the scraping process.
 
