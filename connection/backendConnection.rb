@@ -9,7 +9,6 @@ require_relative '../data_structures'
 
 class BackendConnection < Connection
     
-    
     attr_reader :webpage
     
     # Set up defaults to use when opening a connection
