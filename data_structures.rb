@@ -89,10 +89,6 @@ class Term
         @category = Category.new
     end
     
-    def to_s
-        rep = "ID: #{@category.id} #{@category.name}\n"
-    end
-    
 end
 
 class Dept
