@@ -33,7 +33,7 @@ ruby scrape.rb
 See below, in Code Structure > Controller, for more information on the command line arguments available for the scraping process.
 
 ## Code structure
-The code is split into 4 logical sections: the controller, connection, data structures, and logger. The code for the controller, data structures, and logger are located in the root folder and is stored inside the 'scrape.rb', 'data_strucutres.rb', and 'scrapeLogger.rb' files respectively. The connection code is stored in the 'connection' folder.
+The code is split into 4 logical sections: the controller, connection, data structures, and logger. The code for the controller, data structures, and logger are located in the root folder and is stored inside the [scrape.rb](https://github.com/N8Stewart/Book-Scraper/blob/master/scrape.rb), [data_strucutres.rb](https://github.com/N8Stewart/Book-Scraper/blob/master/data_structures.rb), and [scrapeLogger.rb](https://github.com/N8Stewart/Book-Scraper/blob/master/scrapeLogger.rb) files respectively. The connection code is stored in the [connection](https://github.com/N8Stewart/Book-Scraper/tree/master/connection) folder.
 
 ### Controller
 When executing the program, this is the file you will be executing. The process is as follows:
@@ -57,18 +57,18 @@ When executing the program, this is the file you will be executing. The process 
 * ON INTERRUPT: Usually caused by 'ctrl + c'. The scraper will terminate and can be resumed at a later time.
 
 ### Connection
-The connection class is composed of a base connection class and two abstractions, 'visualConnection.rb' and 'backendConnection.rb'. Inside the connection folder also resides the 'parameters.rb' file which stores various utility methods for interacting with the Mechanize and Capybara connections.
+The [connection](https://github.com/N8Stewart/Book-Scraper/blob/master/connection/connection.rb) class is composed of a base connection class and two abstractions, [visualConnection.rb](https://github.com/N8Stewart/Book-Scraper/blob/master/connection/visualConnection.rb) and [backendConnection.rb](https://github.com/N8Stewart/Book-Scraper/blob/master/connection/backendConnection.rb). Inside the connection folder also resides the [parameters.rb](https://github.com/N8Stewart/Book-Scraper/blob/master/connection/parameters.rb) file which stores various utility methods for interacting with the Mechanize and Capybara connections.
 
-#### Connection
+#### [Connection](https://github.com/N8Stewart/Book-Scraper/blob/master/connection/connection.rb)
 This file is important more for common data storage and initialization than anything else. It stores the hardcoded website URL's as well as instance variables for the connection, session and page. 
 
-#### Backend Connection
+#### [Backend Connection](https://github.com/N8Stewart/Book-Scraper/blob/master/connection/backendConnection.rb)
 Utilizes the [Mechanize gem](https://github.com/sparklemotion/mechanize) to parse the backend of the B&amp;N site. Useful to grab the id values of the term, department, course, and section of each individual course available on the site.
 
-#### Visual Connection
+#### [Visual Connection](https://github.com/N8Stewart/Book-Scraper/blob/master/connection/visualConnection.rb)
 Utilizes the [Capybara Gem](https://github.com/jnicklas/capybara) to select the dropdown boxes on the site and submit a form. Capybara then is able to scrape the webpage for any books present on the summary page of the B&amp;N site. Capybara is needed because the site is dynamic, using JavaScript to change the dropdown values whenever an option is chosen.
 
-#### Parameters
+#### [Parameters](https://github.com/N8Stewart/Book-Scraper/blob/master/connection/parameters.rb)
 Stores and validates connection parameters (term, dept, course, and section). The parameters class also saves, loads, and parses the last.dat file which is important to save state in the case that a connection/socket issue arises.
 
 ### Data Structures
@@ -86,4 +86,4 @@ When a department is in progress of being scraped, a 'semester_id'.'deparment_na
 
 ## Final Notes
 * As it sits, this scraping process can take up to 2 weeks to complete depending on processing speed, internet speed, internet connection stability, and other miscellaneous factors. 
-* The uploading process only works for windows sql server using a PowerShell script. This can be modified to work with Unix/OSX by changing the PowerShell script into a bash script and modifying the system call in the scrape.rb file. But for our use cases, we needed a PowerShell script for windows server 2012.
+* The uploading process only works for windows sql server using a [PowerShell script](https://github.com/N8Stewart/Book-Scraper/blob/master/upload.ps1). This can be modified to work with Unix/OSX by changing the PowerShell script into a bash script and modifying the system call in the scrape.rb file. But for our use cases, we needed a PowerShell script for windows server 2012.
