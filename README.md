@@ -1,6 +1,32 @@
 # OSU Barnes and Noble Book-Scraper
 A web scraper which scrapes the Ohio State University Barnes and Noble textbook site (see here: http://ohiostate.bncollege.com/webapp/wcs/stores/servlet/TBWizardView?catalogId=10001&langId=-1&storeId=33552). The scraper will populate .csv files with all of the books needed for all of the courses at OSU. These .csv files can then be uploaded to a database (more explanation on this process later). 
 
+## Prerequisites
+To run the book scraper, you will need three pieces of software installed on your machine:
+
+* [Ruby](https://www.ruby-lang.org/en/downloads/)
+** Scraper is written in ruby... So yea. You need it.
+* Git
+** For cloning and version control
+* [Mozilla Firefox](https://www.mozilla.org/en-US/firefox/new/?product=firefox-3.6.8)
+** The scraper will be opening Firefox windows to do the visual scraping. Information on this is provided below.
+
+## Cloning and Setup
+The first step to running the Book-Scraper after installing the prerequisite software is to clone the directory onto your local machine (or server). If you are unfamiliar with this process, it is very straightforward. Open up a terminal prompt of some sort ([git-cmd](https://git-scm.com/download/win) for windows is preferred for full functionality). Run the following:
+>git clone https://github.com/N8Stewart/Book-Scraper <location>
+where location is the the folder where you want the files to be cloned. If left blank, it will default to a folder called 'Book-Scraper'.
+<br>
+Once cloned, the next step is to install the bundled software. Run the following:
+>bundle install
+<br>
+All the setup is now complete! You can move onto running the scraper.
+
+## Running the Scraper
+To run the scraper, it is very easy. Just run the following command in the terminal:
+>ruby scrape.rb
+<br>
+See below, in Code Structure > Controller, for more information on the command line arguments available for the scraping process.
+
 ## Code structure
 The code is split into 4 logical sections: the controller, connection, data structures, and logger. The code for the controller, data structures, and logger are located in the root folder and is stored inside the 'scrape.rb', 'data_strucutres.rb', and 'scrapeLogger.rb' files respectively. The connection code is stored in the 'connection' folder.
 ### Controller
@@ -24,7 +50,17 @@ When executing the program, this is the file you will be executing. The process 
 * ON ERROR: If the --persistent argument is provided, the program will reload the scraper starting at step 2. Otherwise, the program will terminate.
 * ON INTERRUPT: Usually caused by 'ctrl + c'. The scraper will terminate and can be resumed at a later time.
 
+### Connection
+
+### Data Structures
+
+### Logger
+
 ## Generated Files
+During the scraping process, several files are generated and renamed in peculiar ways. This section is here to explain the intricasies of this process. 
+
+
+
 
 ## Use cases
 
