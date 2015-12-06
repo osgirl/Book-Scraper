@@ -15,7 +15,7 @@ To run the book scraper, you will need three pieces of software installed on you
 The first step to running the Book-Scraper after installing the prerequisite software is to clone the directory onto your local machine (or server). If you are unfamiliar with this process, it is very straightforward. Open up a terminal prompt of some sort ([git-cmd](https://git-scm.com/download/win) for windows is preferred for full functionality). Run the following:
 
 ```bash
-git clone https://github.com/N8Stewart/Book-Scraper &lt;location&gt;
+git clone https://github.com/N8Stewart/Book-Scraper <location>
 ```
 where location is the the folder where you want the files to be cloned. If left blank, it will default to a folder called 'Book-Scraper'.
 <br>
